@@ -1,0 +1,59 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.sidebar {
+    padding: 1rem;
+    position: fixed;
+    top: 0;
+    width: 250px;
+    height: 100%;
+    background: #111;
+    transition: all 0.5s;
+
+}
+
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar .logo {
+    width: fit-content;
+    padding: 0.5rem;
+    border-radius: 5px;
+    border: 1px solid white;
+}
+
+.sidebar .logo a {
+    color: white;
+    font-size: 1.5rem;
+}
+
+
+.sidebar .dashboard_name {
+    color: white;
+    font-size: 1.5rem;
+    margin: 1rem 0;
+
+}
+
+.sidebar ul li {
+    padding: 15px 10px;
+    border-bottom: 1px solid #333;
+}
+
+.sidebar ul li a {
+    color: white;
+}
+
+.sidlebar ul li a:hover {
+    color: goldenrod !important;
+}

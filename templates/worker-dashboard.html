@@ -1,0 +1,18 @@
+{% extends "dashboard-layout.html" %}
+
+{% block home %}
+    <a href="/worker/dashboard/{{ user_details['id'] }}" class="home">OETMS</a>
+{% endblock %}
+
+{%  block dashboard_name %}
+<p class="dashboard_name">Worker Dashboard</p>
+{% endblock %}
+
+{% block sidebar %}
+<li><a href="#">Profile</a></li>
+<li><a href="#">Documents Status</a></li>
+<li><a href="#">Employment Status</a></li>
+<li><a href="#">Employer Details</a></li>
+<li><a href="#">Report Harassment</a></li>
+<li><a href="/logout">Logout</a></li>
+{% endblock %}

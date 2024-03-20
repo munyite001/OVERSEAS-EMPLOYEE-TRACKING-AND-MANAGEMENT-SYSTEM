@@ -1,0 +1,23 @@
+{% block navbar %}
+<nav>
+    <div class="logo">
+        <a href="/" class="home">OETMS</a>
+    </div>
+    <ul class="nav-links">
+        <li>
+            <a href="#">Login</a>
+            <ul>
+                <li class="nested-nav-links"><a href="/login/worker">Worker Login</a></li>
+                <li class="nested-nav-links"><a href="/login/employer">Employer Login</a></li>
+            </ul>
+        </li>
+        <li>
+            <a href="#">Sign Up</a>
+            <ul>
+                <li class="nested-nav-links"><a href="/register/worker">Worker Sign Up</a></li>
+                <li class="nested-nav-links"><a href="/register/employer">Employer Sign Up</a></li>
+            </ul>
+        </li>
+    </ul>
+</nav>
+{% endblock %}

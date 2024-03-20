@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %} Registration</title>
+    <link rel="stylesheet" href="../static/styles/register.css">
+    <link rel="stylesheet" href="../static/styles/nav.css">
+</head>
+<body>
+    {% include "nav.html" %}
+    <div class="container">
+        <h1>{{ name }} Sign Up</h1>
+        <form id="signupform" method="POST">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="password_confirmation">Confirm Password:</label>
+            <input type="password" id="password_confirmation" name="password_confirmation" required>
+
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
+
+            <label for="first_name">First Name:</label>
+            <input type="text" id="first_name" name="first_name">
+
+            <label for="last_name">Last Name:</label>
+            <input type="text" id="last_name" name="last_name">
+
+            {% block company %}{% endblock %}
+
+            <button type="submit">Sign Up</button>
+        </form>
+    </div>
+    <script>
+        function changeFormAction() {
+            var userType = document.getElementById("user-type").value;
+            var form = document.getElementById("signupform");
+            if (userType == "migrant-worker") {
+                form.action = "/register/worker";
+            } else if (userType == "employer") {
+                form.action = "/register/employer";
+            }
+        }
+    </script>
+</body>
+</html>

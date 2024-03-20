@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+}
+
+body {
+    width: 100vw;
+    min-height: 100vh;
+    background: url(../../static/images/bg.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    color: white;
+}
+
+.modal {
+    position: absolute;
+    top: 3rem;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+    z-index: -1;
+
+}
+
+
+/* Navbar styles */
+
+
+/* Content styles */
+.container {
+    max-width: 800px;
+    margin: 5rem auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.container p {
+    margin: 1rem auto;
+    font-size: 20px;
+    background-color: white;
+    color: black;
+    width: fit-content;
+    padding: 0.5rem;
+    font-weight: 700;
+    border-radius: 5px;
+}
