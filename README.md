@@ -2,16 +2,15 @@
 
 # Project Name
 
-> Description the project.
+> OVERSEAS EMPLOYEE TRACKING AND MANAGEMENT SYSTEM
 
 
 ## Built With
 
-- Major languages
-- Frameworks
-- Technologies used
+- PYTHON(FLASK)
+- JAVASCRIPT
 
-## Live Demo (if available)
+## Live Demo
 
 [Live Demo Link](https://livedemo.com)
 
@@ -42,15 +41,8 @@ To get a local copy up and running follow these simple example steps.
 
 👤 **Author1**
 
-- GitHub: [@githubhandle](https://github.com/githubhandle)
-- Twitter: [@twitterhandle](https://twitter.com/twitterhandle)
-- LinkedIn: [LinkedIn](https://linkedin.com/in/linkedinhandle)
-
-👤 **Author2**
-
-- GitHub: [@githubhandle](https://github.com/githubhandle)
-- Twitter: [@twitterhandle](https://twitter.com/twitterhandle)
-- LinkedIn: [LinkedIn](https://linkedin.com/in/linkedinhandle)
+- GitHub: [@munyite001](https://github.com/munyite001)
+- LinkedIn: [LinkedIn](https://linkedin.com/in/emunyite)
 
 ## 🤝 Contributing
 
