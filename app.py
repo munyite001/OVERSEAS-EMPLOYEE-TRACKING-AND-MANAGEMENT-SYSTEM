@@ -198,16 +198,19 @@ def wokrer_signup():
 @login_required
 def worker_dashboard(id):
     user_details = {}
+    user_docuemnts = {}
     conn = get_db()
     db = conn.cursor()
     user = db.execute("SELECT * FROM WORKERS WHERE id = ?", (id,)).fetchall()
+    documents = db.execute("SELECT * FROM WORKER_DOCUMENTS WHERE user_id = ?", (id,)).fetchall()
     if len(user) != 1:
         return redirect("/login/worker")
     user_details = user[0]
+    user_docuemnts = documents[0]
     conn.commit()
     conn.close()
     """ Worker Dashboard """
-    return render_template("worker-dashboard.html", user_details=user_details)
+    return render_template("worker-dashboard.html", user_details=user_details, user_documents=documents)
 
 @app.route('/upload_document', methods=['POST'])
 def upload_document():
@@ -219,10 +222,28 @@ def upload_document():
         flash('No selected file')
         return redirect(request.url)
     if file:
-        filename = secure_filename(file.filename)
+        conn = get_db()
+        db = conn.cursor()
+
+        #   Get the user details
+        user = db.execute("SELECT * FROM WORKERS WHERE id = ?", (session["user_id"],)).fetchall()
+        if len(user) != 1:
+            return redirect("/login/worker")
+        user_details = user[0]
+
+        document_type = request.form.get("document_type")
+        filename = f"{user_details['username']} - {document_type} - {file.filename}"
+        document_location = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
         # Perform any additional processing (e.g., database update) here
-        flash('Document uploaded successfully')
+        #   UPDATE THE DOCUMENTS DATABASE
+        db.execute("INSERT INTO WORKER_DOCUMENTS (user_id, document_type, document_name, document_location) VALUES (?, ?, ?, ?)",
+                   (session["user_id"], document_type, filename, document_location))
+        
+        conn.commit()
+        conn.close()
+
+
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
     
 @app.route("/logout")
