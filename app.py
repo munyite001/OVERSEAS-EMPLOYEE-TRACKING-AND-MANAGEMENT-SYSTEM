@@ -1,6 +1,7 @@
-from flask import Flask, redirect, g, render_template, request, session, jsonify, flash
+from flask import Flask, redirect, g, render_template, request, session, jsonify, flash, url_for
 from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.utils import secure_filename
 from helpers import login_required, is_valid_userName, is_valid_email
 import sqlite3
 import datetime
@@ -10,8 +11,18 @@ import os
 app = Flask(__name__)
 DATABASE = "app.db"
 
+#   Configure path to store uploaded folders
+UPLOAD_FOLDER = './static/UPLOADS/'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 # Secret Key
 app.secret_key = os.urandom(24)
+
+#   Function to create a new folder for each user's files
+def create_user_folder(user_id):
+    user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
+    if not os.path.exists(user_folder):
+        os.makedirs(user_folder)
 
 # Configure the database
 def get_db():
@@ -198,7 +209,22 @@ def worker_dashboard(id):
     """ Worker Dashboard """
     return render_template("worker-dashboard.html", user_details=user_details)
 
-
+@app.route('/upload_document', methods=['POST'])
+def upload_document():
+    if 'document_file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['document_file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file:
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        # Perform any additional processing (e.g., database update) here
+        flash('Document uploaded successfully')
+        return redirect(url_for('worker_dashboard', id=session["user_id"]))
+    
 @app.route("/logout")
 def logout():
     """Log user out"""

@@ -5,14 +5,114 @@
 {% endblock %}
 
 {%  block dashboard_name %}
-<p class="dashboard_name">Worker Dashboard</p>
+    <p class="dashboard_name">Worker Dashboard</p>
 {% endblock %}
 
 {% block sidebar %}
-<li><a href="#">Profile</a></li>
-<li><a href="#">Documents Status</a></li>
-<li><a href="#">Employment Status</a></li>
-<li><a href="#">Employer Details</a></li>
-<li><a href="#">Report Harassment</a></li>
-<li><a href="/logout">Logout</a></li>
+    <li><a href="#" class="sidebar-links" data-target="profile">Profile</a></li>
+    <li><a href="#" class="sidebar-links active" data-target="documents">Documents Status</a></li>
+    <li><a href="#" class="sidebar-links" data-target="employment">Employment Status</a></li>
+    <li><a href="#" class="sidebar-links" data-target="employer">Employer Details</a></li>
+    <li><a href="#" class="sidebar-links" data-target="harassment">Report Harassment</a></li>
+    <li><a href="/logout">Logout</a></li>
+{% endblock %}
+
+{% block display %}
+    <div id="profile" class="display-container" style="display: none;">
+        <!-- Profile content here -->
+        <div class="title-box">
+            <h2>PROFILE INFORMATION</h2>
+        </div>
+        <div class="content-box">
+            <div class="input-box">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ user_details['username']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="username">Email</label>
+                <input type="email" id="email" name="email" value="{{ user_details['email']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user_details['first_name']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user_details['last_name']}}" disabled>
+            </div>
+
+        </div>
+    </div>
+    <div id="documents" class="display-container" style="display: block;">
+        <!-- Documents Status content here -->
+        <div class="title-box">
+            <h2>DOCUMENT STATUS</h2>
+        </div>
+        <div class="content-box">
+            <form class="user-documents-form" action="/upload_document" method="POST" enctype="multipart/form-data">
+
+                <div class="input-box">
+                    <label for="document_type">Document Type:</label>
+                    <select id="document_type" name="document_type" required>
+                        <option value="">Select Document Type</option>
+                        <option value="passport">NATIONAL ID</option>
+                        <option value="visa">VISA</option>
+                        <option value="visa">PASSPORT</option>
+                        <option value="visa">WORK PERMIT</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <label for="document_file">Upload Document:</label>
+                    <input type="file" id="document_file" name="document_file" required>
+                </div>
+                <button type="submit">Upload</button>
+            </form>
+            <div id="uploaded_documents">
+                <!-- Display uploaded documents here -->
+            </div>
+        </div>
+    </div>
+    
+    <div id="employment" class="display-container" style="display: none;">
+        <!-- Employment Status content here -->
+        <div class="title-box">
+            <h2>EMPLOYMENT STATUS</h2>
+        </div>
+    </div>
+    <div id="employer" class="display-container" style="display: none;">
+        <!-- Employer Details content here -->
+        <div class="title-box">
+            <h2>EMPLOYER DETAILS</h2>
+        </div>
+    </div>
+    <div id="harassment" class="display-container" style="display: none;">
+        <!-- Report Harassment content here -->
+        <div class="title-box">
+            <h2>REPORT HARASSMENT</h2>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const sidebarLinks = document.querySelectorAll(".sidebar-links");
+    const displaySections = document.querySelectorAll(".display > div");
+
+    sidebarLinks.forEach((link) => {
+        link.addEventListener("click", () => {
+            sidebarLinks.forEach((item) => {
+                item.classList.remove("active");
+            })
+            link.classList.add("active");
+
+            const target = link.getAttribute("data-target");
+            displaySections.forEach((section) => {
+                section.style.display = "none";
+                if (section.id === target) {
+                    section.style.display = "block";
+                }
+            });
+        });
+    });
+</script>
 {% endblock %}
