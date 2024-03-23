@@ -198,15 +198,18 @@ def wokrer_signup():
 @login_required
 def worker_dashboard(id):
     user_details = {}
-    user_docuemnts = {}
     conn = get_db()
     db = conn.cursor()
+
+    # Check if logged-in user ID matches the provided ID in the URL
+    if session["user_id"] != id:
+        flash("Unauthorized access!")
+        return redirect("/worker/dashboard/{}".format(session["user_id"]))
     user = db.execute("SELECT * FROM WORKERS WHERE id = ?", (id,)).fetchall()
     documents = db.execute("SELECT * FROM WORKER_DOCUMENTS WHERE user_id = ?", (id,)).fetchall()
     if len(user) != 1:
         return redirect("/login/worker")
     user_details = user[0]
-    user_docuemnts = documents[0]
     conn.commit()
     conn.close()
     """ Worker Dashboard """

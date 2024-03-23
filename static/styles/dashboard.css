@@ -90,6 +90,12 @@ body {
     margin: 1rem;
 }
 
+#profile .content-box .input-box {
+    max-width: 350px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
 
 .input-box label {
     font-size: 20px;
@@ -139,4 +145,40 @@ body {
 .user-documents-form button:hover {
     background-color: goldenrod;
     color: white;
+}
+
+/* MIGRANT WORKER DOCUMENTS */
+#uploaded_documents {
+    width: 100%;
+    height: auto;
+    justify-content: space-around;
+}
+
+#uploaded_documents h2  {
+    width: 100%;
+    background-color: rgb(198, 151, 31);
+    padding: 0.5rem;
+    color: white;
+}
+
+#uploaded_documents ol {
+    border: 1px solid red;
+    padding: 1rem 2rem;
+}
+
+#uploaded_documents ol li {
+    list-style-type:lower-roman;
+    margin: 1rem 0;
+    text-decoration: wavy;
+    font-weight: 700;
+}
+
+#uploaded_documents p {
+    padding: 1rem;
+    font-size: 20px;
+    font-style: oblique;
+}
+
+#uploaded_documents ol li span {
+    color: red;
 }

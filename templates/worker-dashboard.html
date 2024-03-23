@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block sidebar %}
-    <li><a href="#" class="sidebar-links" data-target="profile">Profile</a></li>
-    <li><a href="#" class="sidebar-links active" data-target="documents">Documents Status</a></li>
+    <li><a href="#" class="sidebar-links active" data-target="profile">Profile</a></li>
+    <li><a href="#" class="sidebar-links" data-target="documents">Documents Status</a></li>
     <li><a href="#" class="sidebar-links" data-target="employment">Employment Status</a></li>
     <li><a href="#" class="sidebar-links" data-target="employer">Employer Details</a></li>
     <li><a href="#" class="sidebar-links" data-target="harassment">Report Harassment</a></li>
@@ -18,7 +18,7 @@
 {% endblock %}
 
 {% block display %}
-    <div id="profile" class="display-container" style="display: none;">
+    <div id="profile" class="display-container" style="display: block;">
         <!-- Profile content here -->
         <div class="title-box">
             <h2>PROFILE INFORMATION</h2>
@@ -43,7 +43,7 @@
 
         </div>
     </div>
-    <div id="documents" class="display-container" style="display: block;">
+    <div id="documents" class="display-container" style="display: none;">
         <!-- Documents Status content here -->
         <div class="title-box">
             <h2>DOCUMENT STATUS</h2>
@@ -69,7 +69,19 @@
             </form>
             <div id="uploaded_documents">
                 <h2>Uploaded Documents</h2>
-                
+                {% if user_documents %}
+                    <ol>
+                        {% for document in user_documents %}
+                            <li>{{ document["document_name"] }} - 
+                                <span>
+                                    {{ "NOT VERIFIED" if document["verified"] == 0 else "VERIFIED" }}
+                                </span>
+                            </li>
+                        {% endfor %}   
+                    </ol>
+                {% else %}
+                    <p>No documents uploaded yet</p>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -98,7 +110,14 @@
 <script>
     const sidebarLinks = document.querySelectorAll(".sidebar-links");
     const displaySections = document.querySelectorAll(".display > div");
+    const verificationStatus = document.querySelector('#uploaded_documents ol li span');
 
+    if (verificationStatus.textContent === "VERIFIED") {
+        verificationStatus.style.color = "green";
+    } else {
+        verificationStatus.style.color = "red";
+    }
+    
     sidebarLinks.forEach((link) => {
         link.addEventListener("click", () => {
             sidebarLinks.forEach((item) => {
@@ -115,5 +134,6 @@
             });
         });
     });
+    
 </script>
 {% endblock %}
