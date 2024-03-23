@@ -249,6 +249,29 @@ def upload_document():
 
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
     
+@app.route('/update_employment_details', methods=["POST"])
+@login_required
+def update_employment_details():
+    if request.method == "POST":
+        employed = True if request.form.get("employed") else False
+        work_type = request.form.get("work_type")
+        work_location = request.form.get("work_location")
+        employer_name = request.form.get("employer_name")
+        employer_contact = request.form.get("employer_contact")
+        employment_start_date = request.form.get("employment_start_date")
+
+        #   Connect to the database
+        conn = get_db()
+        db = conn.cursor()
+
+        db.execute("UPDATE workers SET EMPLOYED=?, work_type=?, work_location=?, employer_name=?, employer_contact=?, employment_start_date=? WHERE id=?",
+                   (employed, work_type, work_location, employer_name, employer_contact, employment_start_date, session["user_id"]))
+        
+        conn.commit()
+        conn.close()
+        flash("Employment details updated successfully", "success")
+        return redirect(url_for('worker_dashboard', id=session["user_id"]))
+    
 @app.route("/logout")
 def logout():
     """Log user out"""

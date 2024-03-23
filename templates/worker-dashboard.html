@@ -11,8 +11,8 @@
 {% block sidebar %}
     <li><a href="#" class="sidebar-links active" data-target="profile">Profile</a></li>
     <li><a href="#" class="sidebar-links" data-target="documents">Documents Status</a></li>
-    <li><a href="#" class="sidebar-links" data-target="employment">Employment Status</a></li>
-    <li><a href="#" class="sidebar-links" data-target="employer">Employer Details</a></li>
+    <li><a href="#" class="sidebar-links" data-target="employment-status">Employment Status</a></li>
+    <li><a href="#" class="sidebar-links" data-target="employment-details">Employment Details</a></li>
     <li><a href="#" class="sidebar-links" data-target="harassment">Report Harassment</a></li>
     <li><a href="/logout">Logout</a></li>
 {% endblock %}
@@ -65,7 +65,7 @@
                     <label for="document_file">Upload Document:</label>
                     <input type="file" id="document_file" name="document_file" required>
                 </div>
-                <button type="submit">Upload</button>
+                <button type="submit" class="btn">Upload</button>
             </form>
             <div id="uploaded_documents">
                 <h2>Uploaded Documents</h2>
@@ -86,18 +86,70 @@
         </div>
     </div>
     
-    <div id="employment" class="display-container" style="display: none;">
+    <div id="employment-status" class="display-container" style="display: none;">
         <!-- Employment Status content here -->
         <div class="title-box">
-            <h2>EMPLOYMENT STATUS</h2>
+            <h2>EMPLOYMENT DETAILS</h2>
+        </div>
+        <div class="content-box">
+            <form id="employment-form" action="/update_employment_details" method="POST">
+                <div class="input-box">
+                    <label for="employed">Employed:</label>
+                    <input type="checkbox" id="employed" name="employed" required>
+                </div>
+                <div class="input-box">
+                    <label for="work_type">Work Type:</label>
+                    <input type="text" id="work_type" name="work_type" required>
+                </div>
+                <div class="input-box">
+                    <label for="work_location">Work Location:</label>
+                    <input type="text" id="work_location" name="work_location" required>
+                </div>
+                <div class="input-box">
+                    <label for="employer_name">Employer Name:</label>
+                    <input type="text" id="employer_name" name="employer_name" required>
+                </div>
+                <div class="input-box">
+                    <label for="employer_contact">Employer Contact:</label>
+                    <input type="text" id="employer_contact" name="employer_contact" required>
+                </div>
+                <div class="input-box">
+                    <label for="employment_start_date">Employment Start Date:</label>
+                    <input type="date" id="employment_start_date" name="employment_start_date" required>
+                </div>
+                <button type="submit" class="btn">Save</button>
+            </form>
         </div>
     </div>
-    <div id="employer" class="display-container" style="display: none;">
+    <div id="employment-details" class="display-container" style="display: none;">
         <!-- Employer Details content here -->
         <div class="title-box">
-            <h2>EMPLOYER DETAILS</h2>
+            <h2>EMPLOYMENT DETAILS</h2>
         </div>
-    </div>
+            <div class="content-box">
+                <div class="input-box">
+                    <label for="job">JOB TYPE</label>
+                    <input type="text" id="JOB" name="JOB" value="{{ user_details['work_type']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="work_location">WORK LOCATION</label>
+                    <input type="text" id="work_location" name="work_location" value="{{ user_details['work_location']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="start_date">START DATE</label>
+                    <input type="text" id="start_date" name="start_date" value="{{ user_details['employment_start_date']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="employer_name">EMPLOYER NAME</label>
+                    <input type="text" id="employer_name" name="employer_name" value="{{ user_details['employer_name']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="employer_contact">EMPLOYER CONTACT</label>
+                    <input type="text" id="employer_contact" name="employer_contact" value="{{ user_details['employer_contact']}}" disabled>
+                </div>
+            </div>
+
+        </div>
     <div id="harassment" class="display-container" style="display: none;">
         <!-- Report Harassment content here -->
         <div class="title-box">
@@ -117,7 +169,6 @@
     } else {
         verificationStatus.style.color = "red";
     }
-    
     sidebarLinks.forEach((link) => {
         link.addEventListener("click", () => {
             sidebarLinks.forEach((item) => {
