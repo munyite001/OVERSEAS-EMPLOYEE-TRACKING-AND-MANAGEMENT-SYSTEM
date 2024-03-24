@@ -9,16 +9,17 @@
 {% endblock %}
 
 {% block sidebar %}
-    <li><a href="#" class="sidebar-links active" data-target="profile">Profile</a></li>
+    <li><a href="#" class="sidebar-links" data-target="profile">Profile</a></li>
     <li><a href="#" class="sidebar-links" data-target="documents">Documents Status</a></li>
     <li><a href="#" class="sidebar-links" data-target="employment-status">Employment Status</a></li>
     <li><a href="#" class="sidebar-links" data-target="employment-details">Employment Details</a></li>
     <li><a href="#" class="sidebar-links" data-target="harassment">Report Harassment</a></li>
+    <li> <a href="#" class="sidebar-links active" data-target="incidents">View Incidents</a></li>
     <li><a href="/logout">Logout</a></li>
 {% endblock %}
 
 {% block display %}
-    <div id="profile" class="display-container" style="display: block;">
+    <div id="profile" class="display-container" style="display: none;">
         <!-- Profile content here -->
         <div class="title-box">
             <h2>PROFILE INFORMATION</h2>
@@ -40,6 +41,27 @@
                 <label for="last_name">Last Name</label>
                 <input type="text" id="last_name" name="last_name" value="{{ user_details['last_name']}}" disabled>
             </div>
+            <div class="input-box">
+                <label>Employed: <span>{{"YES" if user_details["EMPLOYED"] != "FALSE" else "NO"}}</span></label>
+            </div>
+            {% if user_details["EMPLOYED"] != "FALSE" %}
+            <div class="input-box">
+                <label for="job">JOB TYPE</label>
+                <input type="text" id="JOB" name="JOB" value="{{ user_details['work_type']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="work_location">WORK LOCATION</label>
+                <input type="text" id="work_location" name="work_location" value="{{ user_details['work_location']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="start_date">START DATE</label>
+                <input type="text" id="start_date" name="start_date" value="{{ user_details['employment_start_date']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="employer_name">EMPLOYER NAME</label>
+                <input type="text" id="employer_name" name="employer_name" value="{{ user_details['employer_name']}}" disabled>
+            </div>
+            {% endif %}
 
         </div>
     </div>
@@ -150,12 +172,51 @@
             </div>
 
         </div>
-    <div id="harassment" class="display-container" style="display: none;">
-        <!-- Report Harassment content here -->
-        <div class="title-box">
-            <h2>REPORT HARASSMENT</h2>
+        <div id="harassment" class="display-container" style="display: none;">
+            <div class="title-box">
+                <h2>REPORT HARASSMENT</h2>
+            </div>
+            <!-- A worker can only report an incident if he/she is employed -->
+            {% if user_details["EMPLOYED"] != "FALSE" %}
+            <div class="content-box">
+                <div class="harassment-notification">
+                    <p>Please provide the following information when filing a harassment report</p>
+                    <ul>
+                        <li>- Date of Incident</li>
+                        <li>- Location of Incident</li>
+                        <li>- Description of Incident</li>
+                    </ul>
+                </div>
+                <form id="harassment-form" action="/report_harassment" method="POST">
+                    <div class="input-box">
+                        <label for="date">Date of Incident:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="location">Location:</label>
+                        <input type="text" id="location" name="location" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="description">Description:</label>
+                        <textarea id="description" name="description" required></textarea>
+                    </div>
+                    <button type="submit" class="btn">Submit</button>
+                </form>
+            </div>
+            {% else %}
+            <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You first have to be employed for you to raise a harassment claim</p>
+            {% endif %}
         </div>
-    </div>
+        <div id="incidents" class="display-container" style="display: block;">
+            <div class="title-box">
+                <h2>REPORTED INCIDENTS</h2>
+            </div>
+            <!-- A worker can only report an incident if he/she is employed -->
+            <div class="content-box">
+            
+            </div>
+        </div>
+        
 {% endblock %}
 
 {% block scripts %}

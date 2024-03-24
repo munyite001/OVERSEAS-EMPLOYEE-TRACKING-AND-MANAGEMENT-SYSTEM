@@ -11,6 +11,56 @@ body {
     overflow-x: hidden;
 }
 
+/* CUSTOM SCROLLBAR */
+body::-webkit-scrollbar {
+    width: 5px;
+}
+
+body::-webkit-scrollbar-track {
+    background: goldenrod;
+}
+
+body::-webkit-scrollbar-thumb {
+    background: wheat;
+    border: 1px solid goldenrod;
+}
+
+/* HARRASMENT SECTION */
+.harassment-notification {
+    width: 450px;
+    border-radius: 5px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    border: 1px solid goldenrod;
+    margin: 1rem;
+}
+
+.harassment-notification p {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0 0 1rem;
+}
+
+.harassment-notification ul {
+    list-style-type: none;
+}
+
+
+#harassment-form .input-box label {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+#harassment-form .input-box textarea {
+    width: 80%;
+    height: 5rem;
+    padding: 1rem;
+}
+
+
 .sidebar {
     padding: 1rem;
     position: fixed;
@@ -93,9 +143,16 @@ body {
 }
 
 #profile .content-box .input-box {
-    max-width: 350px;
+    max-width: 400px;
     flex-direction: row;
     justify-content: space-between;
+}
+
+#profile .input-box label span {
+margin-left: 4rem;
+font-style: italic;
+font-weight: 800;
+font-size: 15px;
 }
 
 

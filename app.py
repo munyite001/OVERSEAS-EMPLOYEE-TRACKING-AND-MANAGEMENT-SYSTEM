@@ -1,5 +1,4 @@
 from flask import Flask, redirect, g, render_template, request, session, jsonify, flash, url_for
-from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from helpers import login_required, is_valid_userName, is_valid_email
@@ -11,18 +10,12 @@ import os
 app = Flask(__name__)
 DATABASE = "app.db"
 
-#   Configure path to store uploaded folders
+#   Configure path to store uploaded files
 UPLOAD_FOLDER = './static/UPLOADS/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Secret Key
 app.secret_key = os.urandom(24)
-
-#   Function to create a new folder for each user's files
-def create_user_folder(user_id):
-    user_folder = os.path.join(app.config['UPLOAD_FOLDER'], str(user_id))
-    if not os.path.exists(user_folder):
-        os.makedirs(user_folder)
 
 # Configure the database
 def get_db():
@@ -271,6 +264,35 @@ def update_employment_details():
         conn.close()
         flash("Employment details updated successfully", "success")
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
+    
+@app.route("/report_harassment", methods=["POST"])
+@login_required
+def report_harassment():
+    if request.method == 'POST':
+        date = request.form.get("date")
+        location = request.form.get("location")
+        description = request.form.get("description")
+
+        if not date or not location or not description:
+            flash("Please fill in all the fields")
+            return redirect(url_for('worker_dashboard', id=session["user_id"]))
+        
+        #   Connect to the database
+        conn = get_db()
+        db = conn.cursor()
+
+        #   GET THE USER DETAIlS
+        user = db.execute("SELECT * FROM workers WHERE id = ?", (session["user_id"],)).fetchone()
+        if not user:
+            return redirect("/login/worker")
+        db.execute("INSERT INTO harassment_reports (user_id, date, location, description) VALUES (?, ?, ?, ?)",
+                   (session["user_id"], date, location, description))
+        conn.commit()
+        conn.close()
+
+        flash('Harassment report submitted successfully')
+        return redirect(url_for('worker_dashboard', id=session["user_id"]))
+
     
 @app.route("/logout")
 def logout():
