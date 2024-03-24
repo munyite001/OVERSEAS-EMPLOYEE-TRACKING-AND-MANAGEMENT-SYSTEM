@@ -99,6 +99,46 @@ def woker_login():
 def employer_login():
     """"Log Employers In"""
     name = "Employer"
+
+    # Connect to the database
+    conn = get_db()
+    db = conn.cursor()
+
+    #   Clear Session
+    session.clear()
+
+    # If user is submitting data (POST)
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username:
+            flash("Must provide username")
+            return render_template("employer-login.html", name=name)
+        elif not password:
+            flash("Must provide password")
+            return render_template("employer-login.html", name=name)
+
+        #   Query database for username
+        user = db.execute("SELECT * FROM EMPLOYERS WHERE username = ?", (username,)).fetchall()
+
+        #   Ensure username exists and password is correct
+        if len(user) != 1 or not check_password_hash(user[0]["password_hash"], password):
+            flash("invalid username and/or password")
+            return render_template("employer-login.html", name=name)
+        
+        # if all is good
+        # set the session for the user
+        session["user_id"] = user[0]["id"]
+        session["last_activity"] = datetime.datetime.now()
+
+        # commit the changes
+        conn.commit()
+        conn.close()
+
+        #   Redirect user to dashboard
+        return redirect("/employer/dashboard/{}".format(user[0]["id"]))
+
     return render_template("employer-login.html", name=name)
 
 @app.route("/register/employer", methods=["POST", "GET"])
@@ -144,7 +184,28 @@ def employer_signup():
     
     return render_template("employer-sign-up.html", name=name)
 
-        
+@app.route("/employer/dashboard/<int:id>", methods=["GET"])
+@login_required
+def employer_dashboard(id):
+    user_details = {}
+    conn = get_db()
+    db = conn.cursor()
+
+    # Check if logged-in user ID matches the provided ID in the URL
+    if session["user_id"] != id:
+        flash("Unauthorized access!")
+        return redirect("/employer/dashboard/{}".format(session["user_id"]))
+    user = db.execute("SELECT * FROM EMPLOYERS WHERE id = ?", (id,)).fetchall()
+    
+    if len(user) != 1:
+        return redirect("/login/worker")
+    user_details = user[0]
+
+    conn.commit()
+    conn.close()
+    """ Employer Dashboard """
+    return render_template("employer-dashboard.html", user_details=user_details)
+
 
 
 @app.route("/register/worker", methods=["POST", "GET"])
