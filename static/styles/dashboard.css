@@ -242,3 +242,26 @@ font-size: 15px;
     flex-direction: row;
     max-width: 200px;
 }
+
+/* HARASSMENT REPORTS */
+#incidents .incidents {
+    margin: 1rem;
+}
+
+.incidents ol li {
+    border: 1px solid goldenrod;
+    border-radius: 15px;
+    padding: 1rem;
+    box-sizing: border-box;
+    margin: 1rem;
+}
+
+.incidents ol li h3 {
+    border-bottom: 1px solid goldenrod;
+    margin: 0.5rem 0;
+    padding: 0.5rem 0;
+}
+
+.incidents .incident-header {
+    font-weight: 900;
+}

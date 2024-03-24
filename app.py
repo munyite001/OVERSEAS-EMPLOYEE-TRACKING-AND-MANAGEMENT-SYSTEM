@@ -200,13 +200,16 @@ def worker_dashboard(id):
         return redirect("/worker/dashboard/{}".format(session["user_id"]))
     user = db.execute("SELECT * FROM WORKERS WHERE id = ?", (id,)).fetchall()
     documents = db.execute("SELECT * FROM WORKER_DOCUMENTS WHERE user_id = ?", (id,)).fetchall()
+    incidents = db.execute("SELECT * FROM harassment_reports WHERE user_id = ?", (session["user_id"],)).fetchall()
+
     if len(user) != 1:
         return redirect("/login/worker")
     user_details = user[0]
+
     conn.commit()
     conn.close()
     """ Worker Dashboard """
-    return render_template("worker-dashboard.html", user_details=user_details, user_documents=documents)
+    return render_template("worker-dashboard.html", user_details=user_details, user_documents=documents, incidents=incidents)
 
 @app.route('/upload_document', methods=['POST'])
 def upload_document():
