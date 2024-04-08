@@ -196,15 +196,16 @@ def employer_dashboard(id):
         flash("Unauthorized access!")
         return redirect("/employer/dashboard/{}".format(session["user_id"]))
     user = db.execute("SELECT * FROM EMPLOYERS WHERE id = ?", (id,)).fetchall()
-    
+    documents = db.execute("SELECT * FROM EMPLOYER_DOCUMENTS WHERE id = ?", (id,)).fetchall()
+
     if len(user) != 1:
-        return redirect("/login/worker")
+        return redirect("/login/employer")
     user_details = user[0]
 
     conn.commit()
     conn.close()
     """ Employer Dashboard """
-    return render_template("employer-dashboard.html", user_details=user_details)
+    return render_template("employer-dashboard.html", user_details=user_details, user_documents=documents)
 
 
 
@@ -272,8 +273,8 @@ def worker_dashboard(id):
     """ Worker Dashboard """
     return render_template("worker-dashboard.html", user_details=user_details, user_documents=documents, incidents=incidents)
 
-@app.route('/upload_document', methods=['POST'])
-def upload_document():
+@app.route('/upload_document_workers', methods=['POST'])
+def upload_document_workers():
     if 'document_file' not in request.files:
         flash('No file part')
         return redirect(request.url)
@@ -305,7 +306,42 @@ def upload_document():
 
 
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
-    
+
+@app.route('/upload_document_employers', methods=['POST'])
+def upload_document_employers():
+    if 'document_file' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['document_file']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file:
+        conn = get_db()
+        db = conn.cursor()
+
+        #   Get the user details
+        user = db.execute("SELECT * FROM EMPLOYERS WHERE id = ?", (session["user_id"],)).fetchall()
+        if len(user) != 1:
+            return redirect("/login/employer")
+        user_details = user[0]
+
+        document_type = request.form.get("document_type")
+        filename = f"{user_details['username']} - {document_type} - {file.filename}"
+        document_location = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        # Perform any additional processing (e.g., database update) here
+        #   UPDATE THE DOCUMENTS DATABASE
+        db.execute("INSERT INTO EMPLOYER_DOCUMENTS (id, document_type, document_name, document_location) VALUES (?, ?, ?, ?)",
+                   (session["user_id"], document_type, filename, document_location))
+        
+        conn.commit()
+        conn.close()
+
+
+        return redirect(url_for('employer_dashboard', id=session["user_id"]))
+
 @app.route('/update_employment_details', methods=["POST"])
 @login_required
 def update_employment_details():

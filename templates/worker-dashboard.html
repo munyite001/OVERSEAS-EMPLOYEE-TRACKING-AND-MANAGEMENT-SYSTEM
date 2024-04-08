@@ -9,17 +9,17 @@
 {% endblock %}
 
 {% block sidebar %}
-    <li><a href="#" class="sidebar-links active" data-target="profile">Profile</a></li>
-    <li><a href="#" class="sidebar-links" data-target="documents">Documents Status</a></li>
-    <li><a href="#" class="sidebar-links" data-target="employment-status">Employment Status</a></li>
-    <li><a href="#" class="sidebar-links" data-target="employment-details">Employment Details</a></li>
-    <li><a href="#" class="sidebar-links" data-target="harassment">Report Harassment</a></li>
-    <li> <a href="#" class="sidebar-links" data-target="incidents">View Incidents</a></li>
+    <li><a href="#" class="sidebar-links active" data-target="worker-profile">Profile</a></li>
+    <li><a href="#" class="sidebar-links" data-target="worker-documents">Documents Status</a></li>
+    <li><a href="#" class="sidebar-links" data-target="worker-employment-status">Set Employment Status</a></li>
+    <li><a href="#" class="sidebar-links" data-target="worker-employment-details">Employment Details</a></li>
+    <li><a href="#" class="sidebar-links" data-target="worker-harassment">Report Harassment</a></li>
+    <li> <a href="#" class="sidebar-links" data-target="worker-incidents">View Incidents</a></li>
     <li><a href="/logout">Logout</a></li>
 {% endblock %}
 
 {% block display %}
-    <div id="profile" class="display-container" style="display: block;">
+    <div id="worker-profile" class="display-container" style="display: block;">
         <!-- Profile content here -->
         <div class="title-box">
             <h2>PROFILE INFORMATION</h2>
@@ -65,13 +65,13 @@
 
         </div>
     </div>
-    <div id="documents" class="display-container" style="display: none;">
+    <div id="worker-documents" class="display-container" style="display: none;">
         <!-- Documents Status content here -->
         <div class="title-box">
             <h2>DOCUMENT STATUS</h2>
         </div>
         <div class="content-box">
-            <form class="user-documents-form" action="/upload_document" method="POST" enctype="multipart/form-data">
+            <form class="user-documents-form" action="/upload_document_workers" method="POST" enctype="multipart/form-data">
 
                 <div class="input-box">
                     <label for="document_type">Document Type:</label>
@@ -89,7 +89,7 @@
                 </div>
                 <button type="submit" class="btn">Upload</button>
             </form>
-            <div id="uploaded_documents">
+            <div class="uploaded_documents">
                 <h2>Uploaded Documents</h2>
                 {% if user_documents %}
                     <ol>
@@ -108,7 +108,7 @@
         </div>
     </div>
     
-    <div id="employment-status" class="display-container" style="display: none;">
+    <div id="worker-employment-status" class="display-container" style="display: none;">
         <!-- Employment Status content here -->
         <div class="title-box">
             <h2>EMPLOYMENT DETAILS</h2>
@@ -143,7 +143,7 @@
             </form>
         </div>
     </div>
-    <div id="employment-details" class="display-container" style="display: none;">
+    <div id="worker-employment-details" class="display-container" style="display: none;">
         <!-- Employer Details content here -->
         <div class="title-box">
             <h2>EMPLOYMENT DETAILS</h2>
@@ -172,7 +172,7 @@
             </div>
 
         </div>
-        <div id="harassment" class="display-container" style="display: none;">
+        <div id="worker-harassment" class="display-container" style="display: none;">
             <div class="title-box">
                 <h2>REPORT HARASSMENT</h2>
             </div>
@@ -207,7 +207,7 @@
             <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You first have to be employed for you to raise a harassment claim</p>
             {% endif %}
         </div>
-        <div id="incidents" class="display-container" style="display: none;">
+        <div id="worker-incidents" class="display-container" style="display: none;">
             <div class="title-box">
                 <h2>REPORTED INCIDENTS</h2>
             </div>
@@ -236,14 +236,14 @@
 {% block scripts %}
 <script>
     const sidebarLinks = document.querySelectorAll(".sidebar-links");
-    const displaySections = document.querySelectorAll(".display > div");
-    const verificationStatus = document.querySelector('#uploaded_documents ol li span');
+    const displaySections = document.querySelectorAll(".display-container");
+    const verificationStatus = document.querySelector('.uploaded_documents ol li span') || null;
 
-    if (verificationStatus.textContent === "VERIFIED") {
-        verificationStatus.style.color = "green";
-    } else {
-        verificationStatus.style.color = "red";
+
+    if (verificationStatus) {
+        verificationStatus.style.color = verificationStatus.textContent === "VERIFIED" ? "green" : "red";
     }
+
     sidebarLinks.forEach((link) => {
         link.addEventListener("click", () => {
             sidebarLinks.forEach((item) => {

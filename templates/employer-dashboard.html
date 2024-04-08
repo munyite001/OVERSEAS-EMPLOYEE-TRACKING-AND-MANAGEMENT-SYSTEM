@@ -8,6 +8,196 @@
     <p class="dashboard_name">Employer Dashboard</p>
 {% endblock %}
 
-{% block sidebar %}
+{% block sidebar %}`
+<li><a href="#" class="sidebar-links active" data-target="profile">Profile</a></li>
+    <li><a href="#" class="sidebar-links" data-target="documents">Documents Status</a></li>
+    <li><a href="#" class="sidebar-links" data-target="company-details">Set Company Details</a></li>
+    <li><a href="#" class="sidebar-links" data-target="set-company-details">Company Details</a></li>
+    <li> <a href="#" class="sidebar-links" data-target="incidents">View Incidents</a></li>
 <li><a href="/logout">Logout</a></li>
+{% endblock %}
+{% block display %}
+<div id="profile" class="display-container" style="display: block;">
+        <!-- Profile content here -->
+        <div class="title-box">
+            <h2>PROFILE INFORMATION</h2>
+        </div>
+        <div class="content-box">
+            <div class="input-box">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" value="{{ user_details['username']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="username">Email</label>
+                <input type="email" id="email" name="email" value="{{ user_details['email']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" value="{{ user_details['first_name']}}" disabled>
+            </div>
+            <div class="input-box">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" value="{{ user_details['last_name']}}" disabled>
+            </div>
+        </div>
+    </div>
+    <div id="documents" class="display-container" style="display: none;">
+        <!-- Documents Status content here -->
+        <div class="title-box">
+            <h2>DOCUMENT STATUS</h2>
+        </div>
+        <div class="content-box">
+            <form class="user-documents-form" action="/upload_document_employers" method="POST" enctype="multipart/form-data">
+
+                <div class="input-box">
+                    <label for="document_type">Document Type:</label>
+                    <select id="document_type" name="document_type" required>
+                        <option value="">Select Document Type</option>
+                        <option value="id">NATIONAL ID</option>
+                        <option value="tax">TAX CERTIFICATE</option>
+                        <option value="work-permit">WORK PERMIT</option>
+                        <option value="company-cert">COMPANY/BUSINESS CERTIFICATE</option>
+                    </select>
+                </div>
+                <div class="input-box">
+                    <label for="document_file">Upload Document:</label>
+                    <input type="file" id="document_file" name="document_file" required>
+                </div>
+                <button type="submit" class="btn">Upload</button>
+            </form>
+            <div class="uploaded_documents">
+                <h2>Uploaded Documents</h2>
+                {% if user_documents %}
+                    <ol>
+                        {% for document in user_documents %}
+                            <li>{{ document["document_name"] }} - 
+                                <span>
+                                    {{ "NOT VERIFIED" if document["verified"] == 0 else "VERIFIED" }}
+                                </span>
+                            </li>
+                        {% endfor %}   
+                    </ol>
+                {% else %}
+                    <p>No documents uploaded yet</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Employer Company Details -->
+    <div id="company-details" class="display-container" style="display: none;">
+        <div class="title-box">
+            <h2>COMPANY DETAILS</h2>
+        </div>
+        <div class="content-box">
+            <form id="company-form" action="/update_company_details" method="POST">
+                <div class="input-box">
+                    <label for="company_name">Company Name:</label>
+                    <input type="text" id="company_name" name="company_name" required>
+                </div>
+                <div class="input-box">
+                    <label for="industry">Industry:</label>
+                    <input type="text" id="industry" name="industry" required>
+                </div>
+                <div class="input-box">
+                    <label for="company_size">Company Size:</label>
+                    <input type="text" id="company_size" name="company_size" required>
+                </div>
+                <div class="input-box">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                <div class="input-box">
+                    <label for="contact">Contact:</label>
+                    <input type="text" id="contact" name="contact" required>
+                </div>
+                <button type="submit" class="btn">Save</button>
+            </form>
+        </div>
+    </div>
+    
+        <div id="employment-details" class="display-container" style="display: none;">
+            <!-- Employer Details content here -->
+            <div class="title-box">
+                <h2>EMPLOYMENT DETAILS</h2>
+            </div>
+                <div class="content-box">
+                    <div class="input-box">
+                        <label for="job">JOB TYPE</label>
+                        <input type="text" id="JOB" name="JOB" value="{{ user_details['work_type']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="work_location">WORK LOCATION</label>
+                        <input type="text" id="work_location" name="work_location" value="{{ user_details['work_location']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="start_date">START DATE</label>
+                        <input type="text" id="start_date" name="start_date" value="{{ user_details['employment_start_date']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="employer_name">EMPLOYER NAME</label>
+                        <input type="text" id="employer_name" name="employer_name" value="{{ user_details['employer_name']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="employer_contact">EMPLOYER CONTACT</label>
+                        <input type="text" id="employer_contact" name="employer_contact" value="{{ user_details['employer_contact']}}" disabled>
+                    </div>
+                </div>
+
+        </div>
+        <div id="incidents" class="display-container" style="display: none;">
+            <div class="title-box">
+                <h2>REPORTED INCIDENTS</h2>
+            </div>
+            <!-- A worker can only report an incident if he/she is employed -->
+            <div class="content-box">
+                {% if incidents %}
+                <div class="incidents">
+                    <ol>
+                        {% for incident in incidents %}
+                        <li>
+                            <h3><span class="incident-header">DATE: </span> {{ incident["date"] }}</h3>
+                            <p><span class="incident-header">DESCRIPTION: </span>{{ incident["description"] }}</p>
+                            <span><span class="incident-header">STATUS: </span>{{ incident["status"] }}</span>
+                        </li>
+                        {% endfor %}
+                    </ol>
+                </div>
+                {% else %}
+                <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You have not reported any incidents</p>
+                {% endif %}
+            </div>
+        </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const sidebarLinks = document.querySelectorAll(".sidebar-links");
+    const displaySections = document.querySelectorAll(".display-container");
+    const verificationStatus = document.querySelector('.uploaded_documents ol li span') || null;
+
+
+    if (verificationStatus) {
+        verificationStatus.style.color = verificationStatus.textContent === "VERIFIED" ? "green" : "red";
+    }
+    
+    sidebarLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+            sidebarLinks.forEach((item) => {
+                item.classList.remove("active")
+            })
+
+            link.classList.add("active");
+
+            const target = link.getAttribute("data-target");
+            displaySections.forEach((section) => {
+                if (section.id === target) {
+                    section.style.display = "block";
+                } else {
+                    section.style.display = "none";
+                }
+            })
+        })
+    })
+</script>
 {% endblock %}
