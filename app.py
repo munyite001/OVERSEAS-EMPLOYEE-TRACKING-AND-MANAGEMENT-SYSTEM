@@ -364,7 +364,19 @@ def update_employment_details():
         conn.close()
         flash("Employment details updated successfully", "success")
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
-    
+
+
+#   Update company details from employers dashboard
+@app.route("/update_company_details", methods=["post"])
+@login_required
+def update_company_details():
+    if request.method == "POST":
+        company_name = request.form.get("company_name")
+        industry = request.form.get("industry")
+        company_size = request.form.get("company_size")
+        address = request.form.get("address")
+        contact = request.form.get("contact")
+        
 @app.route("/report_harassment", methods=["POST"])
 @login_required
 def report_harassment():
