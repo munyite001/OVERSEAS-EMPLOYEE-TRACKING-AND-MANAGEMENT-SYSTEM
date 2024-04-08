@@ -357,7 +357,7 @@ def update_employment_details():
         conn = get_db()
         db = conn.cursor()
 
-        db.execute("UPDATE workers SET EMPLOYED=?, work_type=?, work_location=?, employer_name=?, employer_contact=?, employment_start_date=? WHERE id=?",
+        db.execute("UPDATE WORKERS SET EMPLOYED=?, work_type=?, work_location=?, employer_name=?, employer_contact=?, employment_start_date=? WHERE id=?",
                    (employed, work_type, work_location, employer_name, employer_contact, employment_start_date, session["user_id"]))
         
         conn.commit()
@@ -376,7 +376,21 @@ def update_company_details():
         company_size = request.form.get("company_size")
         address = request.form.get("address")
         contact = request.form.get("contact")
-        
+
+
+        #   Connect to the database
+        conn = get_db()
+        db = conn.cursor()
+
+        db.execute("UPDATE EMPLOYERS SET company=?, industry=?, company_size=?, address=?, contact=? WHERE id=?",
+                   (company_name, industry, company_size, address, contact, session["user_id"]))
+
+        conn.commit()
+        conn.close()
+        flash("Company Details Updated Successfully")
+        return redirect(url_for('employer_dashboard', id=session["user_id"]))
+    
+
 @app.route("/report_harassment", methods=["POST"])
 @login_required
 def report_harassment():
