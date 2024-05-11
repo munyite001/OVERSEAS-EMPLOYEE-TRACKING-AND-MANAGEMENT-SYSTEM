@@ -1,0 +1,59 @@
+{% extends "dashboard-layout.html" %}
+
+{% block home %}
+<a href="/admin/dashboard" class="home">OETMS</a>
+{% endblock %}
+
+{% block dashboard_name %}
+    <p class="dashboard_name">Admin Dashboard</p>
+{% endblock %}
+
+{% block sidebar %}
+    <li><a href="#" class="sidebar-links active" data-target="users">Users</a></li>
+    <li><a href="#" class="sidebar-links" data-target="documents">Document Verifications</a></li>
+    <li><a href="#" class="sidebar-links" data-target="incidents">Incident Management</a></li>
+    <li><a href="/logout">Logout</a></li>
+{% endblock %}
+
+{% block display %}
+<div id="users" class="display-container" style="display: block;">
+    <div class="title-box">
+        <h2>OETMS USERS</h2>
+    </div>
+    <div class="content-box">
+        <div class="split-view">
+            <div class="left-box"></div>
+            <hr>
+            <div class="right-box individual-user-details"></div>
+        </div>
+    </div>
+</div>
+<div id="documents" class="display-container" style="display: none;">
+    <div class="title-box">
+        <h2>OETMS USER DOCUMENTS</h2>
+    </div>
+    <div class="content-box">
+        <div class="split-view">
+            <div class="left-box"></div>
+            <hr>
+            <div class="right-box"></div>
+        </div>
+    </div>
+</div>
+<div id="incidents" class="display-container" style="display: none;">
+    <div class="title-box">
+        <h2>OETMS USER INCIDENTS</h2>
+    </div>
+    <div class="content-box">
+        <div class="split-view">
+            <div class="left-box"></div>
+            <hr>
+            <div class="right-box"></div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="../static/js/admin.js"></script>
+{% endblock %}

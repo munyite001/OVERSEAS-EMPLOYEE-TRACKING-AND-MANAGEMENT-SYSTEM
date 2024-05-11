@@ -419,7 +419,131 @@ def report_harassment():
         flash('Harassment report submitted successfully')
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
 
+@app.route("/admin/login", methods=["GET", "POST"])
+def admin_login():
+    """Log Admin In"""
+    name = "Admin"
+    conn = get_db()
+    db = conn.cursor()
+
+    # Forget any previous user_id
+    session.clear()
+
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if not username:
+            flash("Must provide username")
+            return render_template("admin-login.html", name=name)
+        elif not password:
+            flash("Must provide password")
+            return render_template("admin-login.html", name=name)
+        
+        # # Create the first admin user
+        # db.execute("INSERT INTO ADMIN (username, password_hash) VALUES (?, ?)", ("admin", generate_password_hash("admin")))
+
+        # Query database for username
+        user = db.execute("SELECT * FROM ADMIN WHERE username = ?", (username,)).fetchall()
+
+        # Ensure username exists and password is correct
+        if len(user) != 1 or not check_password_hash(user[0]["password_hash"], password):
+            flash("Invalid username and/or password")
+            return render_template("admin-login.html", name=name)
+        
+        # If all is good
+
+        # Set the session of the user
+        session["user_id"] = user[0]["id"]
+        session["last_activity"] = datetime.datetime.now()
+
+        # Commit the changes
+        conn.commit()
+        conn.close()
+
+        # Redirect user to dashboard
+        return redirect("/admin/dashboard")
     
+    return render_template("admin-login.html", name=name)
+
+@app.route("/admin/dashboard", methods=["GET"])
+def admin_dashboard():
+    return render_template("admin-dashboard.html")
+
+
+@app.route("/admin/users", methods=["GET"])
+def get_users():
+    conn = get_db()
+    db = conn.cursor()
+
+    users = []
+    workers = db.execute("SELECT * FROM workers").fetchall()
+    employers = db.execute("SELECT * FROM employers").fetchall()
+
+    for worker in workers:
+        users.append({
+            "id": worker["id"],
+            "fullname": f"{worker['first_name']} {worker['last_name']}",
+            "email": worker["email"],
+            "Employment Status": worker["EMPLOYED"],
+            "role": "worker"
+        })
+    for employer in employers:
+        users.append({
+            "id": employer["id"],
+            "fullname": f"{employer['first_name']} {employer['last_name']}",
+            "email": employer["email"],
+            "role": "employer"
+        })
+
+    return jsonify(users)
+
+@app.route("/admin/user/<int:user_id>", methods=["GET"])
+def get_user(user_id):
+    conn = get_db()
+    db = conn.cursor()
+
+    # Determine the role of the user based on the 'role' query parameter
+    role = request.args.get('role')
+
+    if role == 'worker':
+        user = db.execute("SELECT * FROM workers WHERE id=?", (user_id,)).fetchone()
+    elif role == 'employer':
+        user = db.execute("SELECT * FROM employers WHERE id=?", (user_id,)).fetchone()
+    else:
+        return jsonify({'error': 'Invalid role'})
+
+    if user:
+        if role == "worker":
+            return jsonify({
+            'id': user['id'],
+            'fullname': f"{user['first_name']} {user['last_name']}",
+            'email': user['email'],
+            'role': role,
+            'Employment Status': user['EMPLOYED'],
+            'work_type': user['work_type'],
+            'work_location': user['work_location'],
+            'employer_name': user['employer_name'],
+            'employer_contact': user['employer_contact'],
+            'employment_start_date': user['employment_start_date']
+        })
+        elif role == "employer":
+            return jsonify({
+            'id': user['id'],
+            'fullname': f"{user['first_name']} {user['last_name']}",
+            'email': user['email'],
+            'role': role,
+            'company': user['company'],
+            'industry': user['industry'],
+            'company_size': user['company_size'],
+            'address': user['address'],
+            'contact': user['contact']
+        })
+    else:
+        return jsonify({'error': 'User not found'})
+
+
+
 @app.route("/logout")
 def logout():
     """Log user out"""
