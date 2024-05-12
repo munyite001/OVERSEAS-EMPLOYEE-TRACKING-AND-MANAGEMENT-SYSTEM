@@ -71,7 +71,7 @@
                     <ol>
                         {% for document in user_documents %}
                             <li>{{ document["document_name"] }} - 
-                                <span>
+                                <span class="{{ 'verifiedTrue' if document['verified'] else 'verifiedFalse' }}">
                                     {{ "NOT VERIFIED" if document["verified"] == 0 else "VERIFIED" }}
                                 </span>
                             </li>
@@ -169,12 +169,6 @@
 <script>
     const sidebarLinks = document.querySelectorAll(".sidebar-links");
     const displaySections = document.querySelectorAll(".display-container");
-    const verificationStatus = document.querySelector('.uploaded_documents ol li span') || null;
-
-
-    if (verificationStatus) {
-        verificationStatus.style.color = verificationStatus.textContent === "VERIFIED" ? "green" : "red";
-    }
     
     sidebarLinks.forEach((link) => {
         link.addEventListener('click', () => {

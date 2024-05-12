@@ -194,6 +194,23 @@ body::-webkit-scrollbar-thumb {
     justify-content: space-between;
 }
 
+.left-box.incident-view .comment-box{
+    width: 100%;
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+}
+
+.left-box.incident-view .comment-box textarea {
+    width: 80%;
+    height: 5rem;
+    padding: 1rem;
+    border: 1px solid goldenrod;
+    border-radius: 5px;
+}
+
 
 .display-container .content-box .split-view hr {
     width: 0.2rem;
@@ -232,6 +249,24 @@ body::-webkit-scrollbar-thumb {
     position: absolute;
     bottom: 1rem;
     margin: 0;
+}
+
+.right-box.individual-document-view {
+    width: 100%;
+    position: relative;
+}
+
+.right-box.individual-document-view .btns {
+    position: absolute;
+    bottom: 1rem;
+    width: 200px;
+    display: flex;
+    justify-content: space-around;
+    margin: 1rem;
+}
+
+.right-box.individual-document-view .btns .btn {
+    position: unset!important;
 }
 
 .display-container .content-box .input-box {
@@ -335,6 +370,14 @@ font-size: 15px;
     font-style: oblique;
 }
 
+.uploaded_documents .verifiedTrue {
+    color: green;
+}
+
+.uploaded_documents .verifiedFalse {
+    color: red;
+}
+
 
 #employment-form .input-box:nth-child(1) {
     flex-direction: row;
@@ -391,5 +434,13 @@ font-size: 15px;
 
     .display i {
         display: block;
+    }
+
+    .display-container .content-box .split-view {
+        flex-direction: column;
+    }
+
+    .display-container .content-box .split-view .left-box, .display-container .content-box .split-view .right-box {
+        width: 100%;
     }
 }

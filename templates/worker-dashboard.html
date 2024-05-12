@@ -1,154 +1,50 @@
-{% extends "dashboard-layout.html" %}
+    {% extends "dashboard-layout.html" %}
 
-{% block home %}
-    <a href="/worker/dashboard/{{ user_details['id'] }}" class="home">OETMS</a>
-{% endblock %}
+    {% block home %}
+        <a href="/worker/dashboard/{{ user_details['id'] }}" class="home">OETMS</a>
+    {% endblock %}
 
-{%  block dashboard_name %}
-    <p class="dashboard_name">Worker Dashboard</p>
-{% endblock %}
+    {%  block dashboard_name %}
+        <p class="dashboard_name">Worker Dashboard</p>
+    {% endblock %}
 
-{% block sidebar %}
-    <li><a href="#" class="sidebar-links active" data-target="worker-profile">Profile</a></li>
-    <li><a href="#" class="sidebar-links" data-target="worker-documents">Documents Status</a></li>
-    <li><a href="#" class="sidebar-links" data-target="worker-employment-status">Set Employment Status</a></li>
-    <li><a href="#" class="sidebar-links" data-target="worker-employment-details">Employment Details</a></li>
-    <li><a href="#" class="sidebar-links" data-target="worker-harassment">Report Harassment</a></li>
-    <li> <a href="#" class="sidebar-links" data-target="worker-incidents">View Incidents</a></li>
-    <li><a href="/logout">Logout</a></li>
-{% endblock %}
+    {% block sidebar %}
+        <li><a href="#" class="sidebar-links active" data-target="worker-profile">Profile</a></li>
+        <li><a href="#" class="sidebar-links" data-target="worker-documents">Documents Status</a></li>
+        <li><a href="#" class="sidebar-links" data-target="worker-employment-status">Set Employment Status</a></li>
+        <li><a href="#" class="sidebar-links" data-target="worker-employment-details">Employment Details</a></li>
+        <li><a href="#" class="sidebar-links" data-target="worker-harassment">Report Harassment</a></li>
+        <li> <a href="#" class="sidebar-links" data-target="worker-incidents">View Incidents</a></li>
+        <li><a href="/logout">Logout</a></li>
+    {% endblock %}
 
-{% block display %}
-    <div id="worker-profile" class="display-container" style="display: block;">
-        <!-- Profile content here -->
-        <div class="title-box">
-            <h2>PROFILE INFORMATION</h2>
-        </div>
-        <div class="content-box">
-            <div class="input-box">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" value="{{ user_details['username']}}" disabled>
+    {% block display %}
+        <div id="worker-profile" class="display-container" style="display: block;">
+            <!-- Profile content here -->
+            <div class="title-box">
+                <h2>PROFILE INFORMATION</h2>
             </div>
-            <div class="input-box">
-                <label for="username">Email</label>
-                <input type="email" id="email" name="email" value="{{ user_details['email']}}" disabled>
-            </div>
-            <div class="input-box">
-                <label for="first_name">First Name</label>
-                <input type="text" id="first_name" name="first_name" value="{{ user_details['first_name']}}" disabled>
-            </div>
-            <div class="input-box">
-                <label for="last_name">Last Name</label>
-                <input type="text" id="last_name" name="last_name" value="{{ user_details['last_name']}}" disabled>
-            </div>
-            <div class="input-box">
-                <label>Employed: <span>{{"YES" if user_details["EMPLOYED"] != "FALSE" else "NO"}}</span></label>
-            </div>
-            {% if user_details["EMPLOYED"] != "FALSE" %}
-            <div class="input-box">
-                <label for="job">JOB TYPE</label>
-                <input type="text" id="JOB" name="JOB" value="{{ user_details['work_type']}}" disabled>
-            </div>
-            <div class="input-box">
-                <label for="work_location">WORK LOCATION</label>
-                <input type="text" id="work_location" name="work_location" value="{{ user_details['work_location']}}" disabled>
-            </div>
-            <div class="input-box">
-                <label for="start_date">START DATE</label>
-                <input type="text" id="start_date" name="start_date" value="{{ user_details['employment_start_date']}}" disabled>
-            </div>
-            <div class="input-box">
-                <label for="employer_name">EMPLOYER NAME</label>
-                <input type="text" id="employer_name" name="employer_name" value="{{ user_details['employer_name']}}" disabled>
-            </div>
-            {% endif %}
-
-        </div>
-    </div>
-    <div id="worker-documents" class="display-container" style="display: none;">
-        <!-- Documents Status content here -->
-        <div class="title-box">
-            <h2>DOCUMENT STATUS</h2>
-        </div>
-        <div class="content-box">
-            <form class="user-documents-form" action="/upload_document_workers" method="POST" enctype="multipart/form-data">
-
-                <div class="input-box">
-                    <label for="document_type">Document Type:</label>
-                    <select id="document_type" name="document_type" required>
-                        <option value="">Select Document Type</option>
-                        <option value="id">NATIONAL ID</option>
-                        <option value="visa">VISA</option>
-                        <option value="passport">PASSPORT</option>
-                        <option value="work-permit">WORK PERMIT</option>
-                    </select>
-                </div>
-                <div class="input-box">
-                    <label for="document_file">Upload Document:</label>
-                    <input type="file" id="document_file" name="document_file" required>
-                </div>
-                <button type="submit" class="btn">Upload</button>
-            </form>
-            <div class="uploaded_documents">
-                <h2>Uploaded Documents</h2>
-                {% if user_documents %}
-                    <ol>
-                        {% for document in user_documents %}
-                            <li>{{ document["document_name"] }} - 
-                                <span>
-                                    {{ "NOT VERIFIED" if document["verified"] == 0 else "VERIFIED" }}
-                                </span>
-                            </li>
-                        {% endfor %}   
-                    </ol>
-                {% else %}
-                    <p>No documents uploaded yet</p>
-                {% endif %}
-            </div>
-        </div>
-    </div>
-    
-    <div id="worker-employment-status" class="display-container" style="display: none;">
-        <!-- Employment Status content here -->
-        <div class="title-box">
-            <h2>EMPLOYMENT DETAILS</h2>
-        </div>
-        <div class="content-box">
-            <form id="employment-form" action="/update_employment_details" method="POST">
-                <div class="input-box">
-                    <label for="employed">Employed:</label>
-                    <input type="checkbox" id="employed" name="employed" required>
-                </div>
-                <div class="input-box">
-                    <label for="work_type">Work Type:</label>
-                    <input type="text" id="work_type" name="work_type" required>
-                </div>
-                <div class="input-box">
-                    <label for="work_location">Work Location:</label>
-                    <input type="text" id="work_location" name="work_location" required>
-                </div>
-                <div class="input-box">
-                    <label for="employer_name">Employer Name:</label>
-                    <input type="text" id="employer_name" name="employer_name" required>
-                </div>
-                <div class="input-box">
-                    <label for="employer_contact">Employer Contact:</label>
-                    <input type="text" id="employer_contact" name="employer_contact" required>
-                </div>
-                <div class="input-box">
-                    <label for="employment_start_date">Employment Start Date:</label>
-                    <input type="date" id="employment_start_date" name="employment_start_date" required>
-                </div>
-                <button type="submit" class="btn">Save</button>
-            </form>
-        </div>
-    </div>
-    <div id="worker-employment-details" class="display-container" style="display: none;">
-        <!-- Employer Details content here -->
-        <div class="title-box">
-            <h2>EMPLOYMENT DETAILS</h2>
-        </div>
             <div class="content-box">
+                <div class="input-box">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" value="{{ user_details['username']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="username">Email</label>
+                    <input type="email" id="email" name="email" value="{{ user_details['email']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="first_name">First Name</label>
+                    <input type="text" id="first_name" name="first_name" value="{{ user_details['first_name']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" id="last_name" name="last_name" value="{{ user_details['last_name']}}" disabled>
+                </div>
+                <div class="input-box">
+                    <label>Employed: <span>{{"YES" if user_details["EMPLOYED"] != "FALSE" else "NO"}}</span></label>
+                </div>
+                {% if user_details["EMPLOYED"] != "FALSE" %}
                 <div class="input-box">
                     <label for="job">JOB TYPE</label>
                     <input type="text" id="JOB" name="JOB" value="{{ user_details['work_type']}}" disabled>
@@ -165,101 +61,231 @@
                     <label for="employer_name">EMPLOYER NAME</label>
                     <input type="text" id="employer_name" name="employer_name" value="{{ user_details['employer_name']}}" disabled>
                 </div>
-                <div class="input-box">
-                    <label for="employer_contact">EMPLOYER CONTACT</label>
-                    <input type="text" id="employer_contact" name="employer_contact" value="{{ user_details['employer_contact']}}" disabled>
-                </div>
-            </div>
-
-        </div>
-        <div id="worker-harassment" class="display-container" style="display: none;">
-            <div class="title-box">
-                <h2>REPORT HARASSMENT</h2>
-            </div>
-            <!-- A worker can only report an incident if he/she is employed -->
-            {% if user_details["EMPLOYED"] != "FALSE" %}
-            <div class="content-box">
-                <div class="harassment-notification">
-                    <p>Please provide the following information when filing a harassment report</p>
-                    <ul>
-                        <li>- Date of Incident</li>
-                        <li>- Location of Incident</li>
-                        <li>- Description of Incident</li>
-                    </ul>
-                </div>
-                <form id="harassment-form" action="/report_harassment" method="POST">
-                    <div class="input-box">
-                        <label for="date">Date of Incident:</label>
-                        <input type="date" id="date" name="date" required>
-                    </div>
-                    <div class="input-box">
-                        <label for="location">Location:</label>
-                        <input type="text" id="location" name="location" required>
-                    </div>
-                    <div class="input-box">
-                        <label for="description">Description:</label>
-                        <textarea id="description" name="description" required></textarea>
-                    </div>
-                    <button type="submit" class="btn">Submit</button>
-                </form>
-            </div>
-            {% else %}
-            <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You first have to be employed for you to raise a harassment claim</p>
-            {% endif %}
-        </div>
-        <div id="worker-incidents" class="display-container" style="display: none;">
-            <div class="title-box">
-                <h2>REPORTED INCIDENTS</h2>
-            </div>
-            <!-- A worker can only report an incident if he/she is employed -->
-            <div class="content-box">
-                {% if incidents %}
-                <div class="incidents">
-                    <ol>
-                        {% for incident in incidents %}
-                        <li>
-                            <h3><span class="incident-header">DATE: </span> {{ incident["date"] }}</h3>
-                            <p><span class="incident-header">DESCRIPTION: </span>{{ incident["description"] }}</p>
-                            <span><span class="incident-header">STATUS: </span>{{ incident["status"] }}</span>
-                        </li>
-                        {% endfor %}
-                    </ol>
-                </div>
-                {% else %}
-                <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You have not reported any incidents</p>
                 {% endif %}
+
+            </div>
+        </div>
+        <div id="worker-documents" class="display-container" style="display: none;">
+            <!-- Documents Status content here -->
+            <div class="title-box">
+                <h2>DOCUMENT STATUS</h2>
+            </div>
+            <div class="content-box">
+                <form class="user-documents-form" action="/upload_document_workers" method="POST" enctype="multipart/form-data">
+
+                    <div class="input-box">
+                        <label for="document_type">Document Type:</label>
+                        <select id="document_type" name="document_type" required>
+                            <option value="">Select Document Type</option>
+                            <option value="id">NATIONAL ID</option>
+                            <option value="visa">VISA</option>
+                            <option value="passport">PASSPORT</option>
+                            <option value="work-permit">WORK PERMIT</option>
+                        </select>
+                    </div>
+                    <div class="input-box">
+                        <label for="document_file">Upload Document:</label>
+                        <input type="file" id="document_file" name="document_file" required>
+                    </div>
+                    <button type="submit" class="btn">Upload</button>
+                </form>
+                <div class="uploaded_documents">
+                    <h2>Uploaded Documents</h2>
+                    {% if user_documents %}
+                        <ol>
+                            {% for document in user_documents %}
+                                <li>{{ document["document_name"] }} - 
+                                    <span class="{{ 'verifiedTrue' if document['verified'] else 'verifiedFalse' }}">
+                                        {{ "NOT VERIFIED" if document["verified"] == 0 else "VERIFIED" }}
+                                    </span>
+                                    
+                                </li>
+                            {% endfor %}   
+                        </ol>
+                    {% else %}
+                        <p>No documents uploaded yet</p>
+                    {% endif %}
+                </div>
             </div>
         </div>
         
-{% endblock %}
+        <div id="worker-employment-status" class="display-container" style="display: none;">
+            <!-- Employment Status content here -->
+            <div class="title-box">
+                <h2>EMPLOYMENT DETAILS</h2>
+            </div>
+            <div class="content-box">
+                <form id="employment-form" action="/update_employment_details" method="POST">
+                    <div class="input-box">
+                        <label for="employed">Employed:</label>
+                        <input type="checkbox" id="employed" name="employed" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="work_type">Work Type:</label>
+                        <input type="text" id="work_type" name="work_type" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="work_location">Work Location:</label>
+                        <input type="text" id="work_location" name="work_location" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="employer_name">Employer Name:</label>
+                        <input type="text" id="employer_name" name="employer_name" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="employer_contact">Employer Contact:</label>
+                        <input type="text" id="employer_contact" name="employer_contact" required>
+                    </div>
+                    <div class="input-box">
+                        <label for="employment_start_date">Employment Start Date:</label>
+                        <input type="date" id="employment_start_date" name="employment_start_date" required>
+                    </div>
+                    <button type="submit" class="btn">Save</button>
+                </form>
+            </div>
+        </div>
+        <div id="worker-employment-details" class="display-container" style="display: none;">
+            <!-- Employer Details content here -->
+            <div class="title-box">
+                <h2>EMPLOYMENT DETAILS</h2>
+            </div>
+                <div class="content-box">
+                    <div class="input-box">
+                        <label for="job">JOB TYPE</label>
+                        <input type="text" id="JOB" name="JOB" value="{{ user_details['work_type']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="work_location">WORK LOCATION</label>
+                        <input type="text" id="work_location" name="work_location" value="{{ user_details['work_location']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="start_date">START DATE</label>
+                        <input type="text" id="start_date" name="start_date" value="{{ user_details['employment_start_date']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="employer_name">EMPLOYER NAME</label>
+                        <input type="text" id="employer_name" name="employer_name" value="{{ user_details['employer_name']}}" disabled>
+                    </div>
+                    <div class="input-box">
+                        <label for="employer_contact">EMPLOYER CONTACT</label>
+                        <input type="text" id="employer_contact" name="employer_contact" value="{{ user_details['employer_contact']}}" disabled>
+                    </div>
+                </div>
 
-{% block scripts %}
+            </div>
+            <div id="worker-harassment" class="display-container" style="display: none;">
+                <div class="title-box">
+                    <h2>REPORT HARASSMENT</h2>
+                </div>
+                <!-- A worker can only report an incident if he/she is employed -->
+                {% if user_details["EMPLOYED"] != "FALSE" %}
+                <div class="content-box">
+                    <div class="harassment-notification">
+                        <p>Please provide the following information when filing a harassment report</p>
+                        <ul>
+                            <li>- Date of Incident</li>
+                            <li>- Location of Incident</li>
+                            <li>- Description of Incident</li>
+                        </ul>
+                    </div>
+                    <form id="harassment-form" action="/report_harassment" method="POST">
+                        <div class="input-box">
+                            <label for="date">Date of Incident:</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="input-box">
+                            <label for="location">Location:</label>
+                            <input type="text" id="location" name="location" required>
+                        </div>
+                        <div class="input-box">
+                            <label for="description">Description:</label>
+                            <textarea id="description" name="description" required></textarea>
+                        </div>
+                        <button type="submit" class="btn">Submit</button>
+                    </form>
+                </div>
+                {% else %}
+                <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You first have to be employed for you to raise a harassment claim</p>
+                {% endif %}
+            </div>
+            <div id="worker-incidents" class="display-container" style="display: none;">
+                <div class="title-box">
+                    <h2>REPORTED INCIDENTS</h2>
+                </div>
+                <!-- A worker can only report an incident if he/she is employed -->
+                <div class="content-box">
+                    {% if incidents %}
+                    <div class="incidents">
+                        <ol>
+                            {% for incident in incidents %}
+                            <li>
+                                <h3><span class="incident-header">DATE: </span> {{ incident["date"] }}</h3>
+                                <p><span class="incident-header">DESCRIPTION: </span>{{ incident["description"] }}</p>
+                                <p><span class="incident-header">STATUS: </span>{{ incident["status"] }}</p>
+                                <p><span class="incident-header">ADMIN FEEDBACK: </span>{{ incident["admin_comments"] or "Admin is yet to comment"}}</p>
+                            </li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+                    {% else %}
+                    <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You have not reported any incidents</p>
+                    {% endif %}
+                </div>
+            </div>
+            
+    {% endblock %}
+
+    {% block scripts %}
 <script>
-    const sidebarLinks = document.querySelectorAll(".sidebar-links");
-    const displaySections = document.querySelectorAll(".display-container");
-    const verificationStatus = document.querySelector('.uploaded_documents ol li span') || null;
 
-
-    if (verificationStatus) {
-        verificationStatus.style.color = verificationStatus.textContent === "VERIFIED" ? "green" : "red";
+    function getUserLocation() {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(saveUserLocation);
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
     }
-
-    sidebarLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-            sidebarLinks.forEach((item) => {
-                item.classList.remove("active");
-            })
-            link.classList.add("active");
-
-            const target = link.getAttribute("data-target");
-            displaySections.forEach((section) => {
-                section.style.display = "none";
-                if (section.id === target) {
-                    section.style.display = "block";
-                }
+    getUserLocation()
+    
+    function saveUserLocation(position) {
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+    
+        // Send latitude and longitude to your backend server
+        fetch("/save-user-location", {
+            method: "POST",
+            body: JSON.stringify({ latitude, longitude }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Location saved successfully:", data);
+        })
+        .catch(error => {
+            console.error("Error saving location:", error);
+        });
+    }
+        const sidebarLinks = document.querySelectorAll(".sidebar-links");
+        const displaySections = document.querySelectorAll(".display-container");
+    
+        sidebarLinks.forEach((link) => {
+            link.addEventListener("click", () => {
+                sidebarLinks.forEach((item) => {
+                    item.classList.remove("active");
+                })
+                link.classList.add("active");
+    
+                const target = link.getAttribute("data-target");
+                displaySections.forEach((section) => {
+                    section.style.display = "none";
+                    if (section.id === target) {
+                        section.style.display = "block";
+                    }
+                });
             });
         });
-    });
-    
-</script>
-{% endblock %}
+        
+    </script>        
+    {% endblock %}

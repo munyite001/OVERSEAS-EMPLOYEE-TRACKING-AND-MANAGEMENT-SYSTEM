@@ -1,7 +1,7 @@
 from flask import Flask, redirect, g, render_template, request, session, jsonify, flash, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
-from helpers import login_required, is_valid_userName, is_valid_email
+from helpers import login_required, admin_login_required,is_valid_userName, is_valid_email
 import sqlite3
 import datetime
 import os
@@ -419,6 +419,26 @@ def report_harassment():
         flash('Harassment report submitted successfully')
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
 
+
+@app.route('/save-user-location', methods=['POST'])
+def save_user_location():
+    data = request.json
+    latitude = data['latitude']
+    longitude = data['longitude']
+
+    cooridanates = f"{latitude}, {longitude}"
+    # Save latitude and longitude to the database or perform any desired action
+    conn = get_db()
+    db = conn.cursor()
+
+    db.execute("UPDATE workers SET current_location = ? WHERE id = ?", (cooridanates, session["user_id"]))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({'message': 'Location saved successfully'})
+
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login():
     """Log Admin In"""
@@ -467,6 +487,7 @@ def admin_login():
     return render_template("admin-login.html", name=name)
 
 @app.route("/admin/dashboard", methods=["GET"])
+@admin_login_required
 def admin_dashboard():
     return render_template("admin-dashboard.html")
 
@@ -517,6 +538,8 @@ def get_user(user_id):
         if role == "worker":
             return jsonify({
             'id': user['id'],
+            'first': user['first_name'],
+            'last': user['last_name'],
             'fullname': f"{user['first_name']} {user['last_name']}",
             'email': user['email'],
             'role': role,
@@ -530,6 +553,8 @@ def get_user(user_id):
         elif role == "employer":
             return jsonify({
             'id': user['id'],
+            'first': user['first_name'],
+            'last': user['last_name'],
             'fullname': f"{user['first_name']} {user['last_name']}",
             'email': user['email'],
             'role': role,
@@ -542,6 +567,97 @@ def get_user(user_id):
     else:
         return jsonify({'error': 'User not found'})
 
+
+@app.route("/admin/documents", methods=["GET"])
+def get_documents():
+    conn = get_db()
+    db = conn.cursor()
+
+    users = []
+    workers = db.execute("SELECT * FROM workers").fetchall()
+    employers = db.execute("SELECT * FROM employers").fetchall()
+
+    for worker in workers:
+        documents = db.execute("SELECT * FROM WORKER_DOCUMENTS WHERE user_id=?", (worker["id"],)).fetchall()
+        for document in documents:
+            users.append({
+                "doc_id": document["id"],
+                "user_id": worker["id"],
+                "email": worker["email"],
+                "fullname": f"{worker['first_name']} {worker['last_name']}",
+                "document_type": document["document_type"],
+                "document_name": document["document_name"],
+                "document_location": document["document_location"],
+                "role": "worker"
+            })
+    
+    for employer in employers:
+        documents = db.execute("SELECT * FROM EMPLOYER_DOCUMENTS WHERE id=?", (employer["id"],)).fetchall()
+        for document in documents:
+            users.append({
+                "doc_id": document["id"],
+                "user_id": employer["id"],
+                "email": employer["email"],
+                "fullname": f"{employer['first_name']} {employer['last_name']}",
+                "document_type": document["document_type"],
+                "document_name": document["document_name"],
+                "document_location": document["document_location"],
+                "role": "employer"
+            })
+    
+    return jsonify(users)
+
+@app.route("/admin/verify_document", methods=["POST"])
+def verify_document():
+    document_id = request.form.get("document_id")
+    role = request.form.get("role")
+
+    conn = get_db()
+    db = conn.cursor()
+
+    if role == "employer":
+        db.execute("UPDATE EMPLOYER_DOCUMENTS SET verified = TRUE WHERE id = ?", (document_id,))
+    elif role == "worker":
+        db.execute("UPDATE WORKER_DOCUMENTS SET verified = TRUE WHERE id = ?", (document_id,))
+
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Document verified successfully"})
+
+
+@app.route("/admin/incidents", methods=["GET"])
+def get_incidents():
+    conn = get_db()
+    db = conn.cursor()
+
+    incidents = db.execute("""
+        SELECT h.id, h.user_id, h.date, h.location, h.description, h.status, h.admin_comments,
+               w.first_name, w.last_name, w.email
+        FROM harassment_reports AS h
+        JOIN workers AS w ON h.user_id = w.id
+    """).fetchall()
+
+    return jsonify(incidents)
+
+
+
+@app.route("/admin/incidents/<int:incident_id>/comment", methods=["POST"])
+def add_comment(incident_id):
+    conn = get_db()
+    db = conn.cursor()
+
+    comment = request.json.get("comment")
+    if not comment:
+        return jsonify({"error": "Comment is required"}), 400
+
+    db.execute(
+        "UPDATE harassment_reports SET admin_comments = ? WHERE id = ?",
+        (comment, incident_id)
+    )
+    conn.commit()
+
+    return jsonify({"message": "Comment added successfully"})
 
 
 @app.route("/logout")

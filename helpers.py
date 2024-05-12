@@ -16,6 +16,19 @@ def login_required(f):
         return f(*args, **kwargs)
     return decorated_function
 
+def admin_login_required(f):
+    """
+    Decorate routes to require admin login.
+
+    https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if session.get("user_id") is None:
+            return redirect("/admin/login")
+        return f(*args, **kwargs)
+    return decorated_function
+
 def is_valid_userName(username):
     username_regex = re.compile(r"^[a-zA-Z0-9]{4,}$")
     return bool(username_regex.match(username))
