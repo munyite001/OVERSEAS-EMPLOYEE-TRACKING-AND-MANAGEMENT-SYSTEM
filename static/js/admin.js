@@ -207,7 +207,7 @@ function fetchIncidents() {
         .then((response) => response.json())
         .then((incidents) => {
             incidentView.innerHTML = "<h2>OETMS WORKER INCIDENTS</h2>";
-    
+
             incidents.forEach((incident) => {
                 const incidentElement = document.createElement("div");
                 incidentElement.classList.add("user-box")
@@ -218,7 +218,14 @@ function fetchIncidents() {
                     </div>
                     <p><span>Reported By</span>: ${incident.first_name} ${incident.last_name}</p>
                     <p><span>Description</span>: ${incident.description}</p>
-                    <p><span>Status</span>: ${incident.status}</p>
+                    <div>
+                        <label for="inc-status">Status:</label>
+                        <select id="inc-status">
+                            <option value="inprogress" ${incident.status === 'inprogress' ? 'selected' : ''}>In Progress</option>
+                            <option value="pending" ${incident.status === 'pending' ? 'selected' : ''}>Pending</option>
+                            <option value="resolved" ${incident.status === 'resolved' ? 'selected' : ''}>Resolved</option>
+                        </select>
+                    </div>
                     <div class="comment-box">
                         <textarea class="admin-comment" placeholder="Add admin comment..."></textarea>
                         <button class="btn" onclick="addComment(${incident.id})">Add Comment</button>
@@ -229,16 +236,17 @@ function fetchIncidents() {
         });
 }
 
+
 function addComment(incidentId) {
     const commentElement = document.querySelector('.admin-comment');
     const comment = commentElement.value;
-
+    const status = document.getElementById('inc-status').value;
     fetch(`/admin/incidents/${incidentId}/comment`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
-        body: JSON.stringify({ comment })
+        body: JSON.stringify({ comment, status })
     })
         .then((response) => response.json())
         .then((data) => {

@@ -650,12 +650,13 @@ def add_comment(incident_id):
     db = conn.cursor()
 
     comment = request.json.get("comment")
+    status  = request.json.get("status")
     if not comment:
         return jsonify({"error": "Comment is required"}), 400
 
     db.execute(
-        "UPDATE harassment_reports SET admin_comments = ? WHERE id = ?",
-        (comment, incident_id)
+        "UPDATE harassment_reports SET admin_comments = ?, status = ? WHERE id = ?",
+        (comment, status, incident_id)
     )
     conn.commit()
 
