@@ -187,16 +187,17 @@ def employer_signup():
 @app.route("/employer/dashboard/<int:id>", methods=["GET"])
 @login_required
 def employer_dashboard(id):
+    user_id = int(id)
     user_details = {}
     conn = get_db()
     db = conn.cursor()
 
     # Check if logged-in user ID matches the provided ID in the URL
-    if session["user_id"] != id:
+    if session["user_id"] != user_id:
         flash("Unauthorized access!")
         return redirect("/employer/dashboard/{}".format(session["user_id"]))
     user = db.execute("SELECT * FROM EMPLOYERS WHERE id = ?", (id,)).fetchall()
-    documents = db.execute("SELECT * FROM EMPLOYER_DOCUMENTS WHERE id = ?", (id,)).fetchall()
+    documents = db.execute("SELECT * FROM EMPLOYER_DOCUMENTS WHERE user_id = ?", (user_id,)).fetchall()
 
     if len(user) != 1:
         return redirect("/login/employer")
