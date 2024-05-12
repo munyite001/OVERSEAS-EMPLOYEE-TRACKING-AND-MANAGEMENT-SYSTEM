@@ -54,9 +54,10 @@ fetch("/admin/users")
                         </div>
                         
                         <p><span>Role</span>: ${user.role}</p>
+                        <p><span>Location</span>: ${user.location}</p>
                         ${user.role === 'worker' ? `<p><span>Employed</span>: ${user['Employment Status'] == 1 ? "Yes" : "No"}</p>` : ''}
                         <div class="user-btns">
-                        <button class="btn" onclick="getUserDetails(${user.id}, '${user.role}')">View</button>
+                        <button class="btn" onclick="getUserDetails(${user.id}, '${user.role}', '${user.location}')">View</button>
                         <button class="btn">Delete</button>
                         </div>
                         `;
@@ -69,7 +70,7 @@ fetchUsers()
 
 
 //  Function to get profile information of an individual user
-function getUserDetails(userId, userRole) {
+function getUserDetails(userId, userRole, userLocation) {
     // Fetch user details based on the userId and userRole
     fetch(`/admin/user/${userId}?role=${userRole}`)
         .then((response) => response.json())
@@ -110,7 +111,7 @@ function getUserDetails(userId, userRole) {
                         <h3>Employemnt Start Date:</h3> <p>${user.employment_start_date}</p>
                     </div>
                     <div class="row">
-                        <h3>Current User Location:</h3> <p>${user.current_location}</p>
+                        <h3>Current User Location:</h3> <p>${userLocation}</p>
                     </div>
                 </div>
                 <button class="btn" onclick="convertToPdf('.individual-user-details', '${user.first}-profile.pdf')">Print</button>

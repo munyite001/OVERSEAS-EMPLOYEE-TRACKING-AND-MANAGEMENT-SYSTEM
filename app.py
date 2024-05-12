@@ -1,4 +1,5 @@
 from flask import Flask, redirect, g, render_template, request, session, jsonify, flash, url_for
+from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from helpers import login_required, admin_login_required,is_valid_userName, is_valid_email
@@ -13,7 +14,14 @@ DATABASE = "app.db"
 #   Configure path to store uploaded files
 UPLOAD_FOLDER = './static/UPLOADS/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'emunyite@gmail.com'
+app.config['MAIL_PASSWORD'] = 'password'
 
+
+mail = Mail(app)
 # Secret Key
 app.secret_key = os.urandom(24)
 
@@ -414,10 +422,12 @@ def report_harassment():
             return redirect("/login/worker")
         db.execute("INSERT INTO harassment_reports (user_id, date, location, description) VALUES (?, ?, ?, ?)",
                    (session["user_id"], date, location, description))
+        
+        send_email("New Harassment Report","emunyite@gmail.com", "emunyite@gmail.com", "A new harassment report has been submitted")
+        print("Email sent successfully")
         conn.commit()
         conn.close()
 
-        flash('Harassment report submitted successfully')
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
 
 
@@ -505,7 +515,7 @@ def get_users():
     for worker in workers:
         users.append({
             "id": worker["id"],
-            "current_location": worker["current_location"],
+            "location": worker["current_location"],
             "fullname": f"{worker['first_name']} {worker['last_name']}",
             "email": worker["email"],
             "Employment Status": worker["EMPLOYED"],
@@ -669,6 +679,16 @@ def logout():
     session.clear()
     return redirect("/")
 
+
+
+# Method to send mail
+def send_email(subject, sender, recipients, body):
+    msg = Message(subject, sender=sender, recipients=recipients)
+    msg.body = body
+    mail.send(msg)
+
 if __name__ == "__main__":
     app.run(debug=True)
+
+
 
