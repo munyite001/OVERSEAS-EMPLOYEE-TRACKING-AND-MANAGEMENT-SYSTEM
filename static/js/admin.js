@@ -108,7 +108,10 @@ function getUserDetails(userId, userRole) {
                     </div>
                     <div class="row">
                         <h3>Employemnt Start Date:</h3> <p>${user.employment_start_date}</p>
-                    <div>
+                    </div>
+                    <div class="row">
+                        <h3>Current User Location:</h3> <p>${user.current_location}</p>
+                    </div>
                 </div>
                 <button class="btn" onclick="convertToPdf('.individual-user-details', '${user.first}-profile.pdf')">Print</button>
             `;

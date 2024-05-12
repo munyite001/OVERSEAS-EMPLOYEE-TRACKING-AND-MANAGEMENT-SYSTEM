@@ -333,8 +333,8 @@ def upload_document_employers():
 
         # Perform any additional processing (e.g., database update) here
         #   UPDATE THE DOCUMENTS DATABASE
-        db.execute("INSERT INTO EMPLOYER_DOCUMENTS (id, document_type, document_name, document_location) VALUES (?, ?, ?, ?)",
-                   (session["user_id"], document_type, filename, document_location))
+        db.execute("INSERT INTO EMPLOYER_DOCUMENTS (user_id, document_type, document_name, document_location) VALUES (?, ?, ?, ?)",
+                   (session["user_id"] ,document_type, filename, document_location))
         
         conn.commit()
         conn.close()
@@ -504,6 +504,7 @@ def get_users():
     for worker in workers:
         users.append({
             "id": worker["id"],
+            "current_location": worker["current_location"],
             "fullname": f"{worker['first_name']} {worker['last_name']}",
             "email": worker["email"],
             "Employment Status": worker["EMPLOYED"],
