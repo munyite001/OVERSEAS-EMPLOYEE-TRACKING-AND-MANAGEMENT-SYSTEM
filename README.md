@@ -15,7 +15,7 @@
 ## Getting Started
 
 To get a local copy up and running follow these simple example steps.
-1. Clone the repo from this [Github Repo](https://github.com/munyite001/OVERSEAS-EMPLOYEE-TRACKING-AND-MANAGEMENT-SYSTEM.git)
+1. Clone the repo from this [Github Repo](https://github.com/munyite001/OVERSEAS-EMPLOYEE-TRACKING-AND-MANAGEMENT-SYSTEM.git) (https://github.com/munyite001/OVERSEAS-EMPLOYEE-TRACKING-AND-MANAGEMENT-SYSTEM.git)
 2. cd into the project directory
 3. Once inside the project directory, run the command: ```pip install -r requirements.txt```
 4. Once all requirements have been installed, simply start the app server by running```python app.py```
