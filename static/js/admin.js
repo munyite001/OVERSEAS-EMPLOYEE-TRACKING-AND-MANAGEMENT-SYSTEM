@@ -220,7 +220,7 @@ function fetchIncidents() {
                     <p><span>Reported By</span>: ${incident.first_name} ${incident.last_name}</p>
                     <p><span>Description</span>: ${incident.description}</p>
                     <div>
-                        <label for="inc-status">Status:</label>
+                        <label for="inc-status" style="color: goldenrod;">Status: </label>
                         <select id="inc-status">
                             <option value="inprogress" ${incident.status === 'inprogress' ? 'selected' : ''}>In Progress</option>
                             <option value="pending" ${incident.status === 'pending' ? 'selected' : ''}>Pending</option>

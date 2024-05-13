@@ -1,11 +1,14 @@
 from flask import Flask, redirect, g, render_template, request, session, jsonify, flash, url_for
-from flask_mail import Mail, Message
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.utils import secure_filename
 from helpers import login_required, admin_login_required,is_valid_userName, is_valid_email
 import sqlite3
 import datetime
 import os
+from email.message import EmailMessage
+import ssl
+import smtplib
+from send_mail import send_email
 
 # Configure Application
 app = Flask(__name__)
@@ -14,14 +17,7 @@ DATABASE = "app.db"
 #   Configure path to store uploaded files
 UPLOAD_FOLDER = './static/UPLOADS/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 587
-app.config['MAIL_USE_TLS'] = True
-app.config['MAIL_USERNAME'] = 'emunyite@gmail.com'
-app.config['MAIL_PASSWORD'] = 'password'
 
-
-mail = Mail(app)
 # Secret Key
 app.secret_key = os.urandom(24)
 
@@ -423,7 +419,7 @@ def report_harassment():
         db.execute("INSERT INTO harassment_reports (user_id, date, location, description) VALUES (?, ?, ?, ?)",
                    (session["user_id"], date, location, description))
         
-        send_email("New Harassment Report","emunyite@gmail.com", "emunyite@gmail.com", "A new harassment report has been submitted")
+        send_email()
         print("Email sent successfully")
         conn.commit()
         conn.close()
@@ -680,12 +676,6 @@ def logout():
     return redirect("/")
 
 
-
-# Method to send mail
-def send_email(subject, sender, recipients, body):
-    msg = Message(subject, sender=sender, recipients=recipients)
-    msg.body = body
-    mail.send(msg)
 
 if __name__ == "__main__":
     app.run(debug=True)
