@@ -2,6 +2,8 @@
 
 > OVERSEAS EMPLOYEE TRACKING AND MANAGEMENT SYSTEM
 
+## Screenshots
+![OETMS SCREENSHOTE](../Images/project_screenshot.png)
 
 ## Built With
 - Flask
@@ -17,7 +19,7 @@ To get a local copy up and running follow these simple example steps.
 2. cd into the project directory
 3. Once inside the project directory, run the command: ```pip install -r requirements.txt```
 4. Once all requirements have been installed, simply start the app server by running```python app.py```
-- That will start the app server and you can access it from localhost port 5000 (https://127.0.0.1/)
+- That will start the app server and you can access it from localhost port 5000 (https://127.0.0.1:5000/)
 
 ### Prerequisites
 All you need is to have a machine with python installed
