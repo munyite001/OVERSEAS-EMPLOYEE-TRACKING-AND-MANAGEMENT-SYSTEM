@@ -1,40 +1,26 @@
-![](https://img.shields.io/badge/Microverse-blueviolet)
-
 # Project Name
 
 > OVERSEAS EMPLOYEE TRACKING AND MANAGEMENT SYSTEM
 
 
 ## Built With
-
-- PYTHON(FLASK)
-- JAVASCRIPT
-
-## Live Demo
-
-[Live Demo Link](https://livedemo.com)
-
+- Flask
+- SQLite3
+- HTML
+- CSS
+- JavaScript
 
 ## Getting Started
 
-**This is an example of how you may give instructions on setting up your project locally.**
-**Modify this file to match your project, remove sections that don't apply. For example: delete the testing section if the currect project doesn't require testing.**
-
-
 To get a local copy up and running follow these simple example steps.
+1. Clone the repo from this [Github Repo](https://github.com/munyite001/OVERSEAS-EMPLOYEE-TRACKING-AND-MANAGEMENT-SYSTEM.git)
+2. cd into the project directory
+3. Once inside the project directory, run the command: ```pip install -r requirements.txt```
+4. Once all requirements have been installed, simply start the app server by running```python app.py```
+- That will start the app server and you can access it from localhost port 5000 (https://127.0.0.1/)
 
 ### Prerequisites
-
-### Setup
-
-### Install
-
-### Usage
-
-### Run tests
-
-### Deployment
-
+All you need is to have a machine with python installed
 
 
 ## Authors
@@ -53,12 +39,6 @@ Feel free to check the [issues page](../../issues/).
 ## Show your support
 
 Give a ⭐️ if you like this project!
-
-## Acknowledgments
-
-- Hat tip to anyone whose code was used
-- Inspiration
-- etc
 
 ## 📝 License
 
