@@ -3,7 +3,7 @@
 > OVERSEAS EMPLOYEE TRACKING AND MANAGEMENT SYSTEM
 
 ## Screenshots
-![OETMS SCREENSHOTE](../Images/project_screenshot.png)
+![OETMS SCREENSHOTE](./images/project_screenshot.png)
 
 ## Built With
 - Flask
