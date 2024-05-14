@@ -3,7 +3,7 @@ const displaySections = document.querySelectorAll(".display-container");
 var usersView = document.querySelector("#users .split-view .left-box");
 var documentsView = document.querySelector("#documents .split-view .left-box");
 var incidentView = document.querySelector("#incidents .incident-view");
-
+var messageView = document.querySelector(".messages-view");
 
 sidebarLinks.forEach((link) => {
     link.addEventListener("click", () => {
@@ -23,6 +23,10 @@ sidebarLinks.forEach((link) => {
         if (target == "incidents")
         {
             fetchIncidents()
+        }
+        if (target == "chat")
+        {
+            getMessages()
         }
 
         displaySections.forEach((section) => {
@@ -51,8 +55,9 @@ fetch("/admin/users")
                         <div class="user-heading">
                             <p><span>Fullname</span>: ${user.fullname}</p>
                             <p><span>Email</span>: ${user.email}</p>
+                
                         </div>
-                        
+                        <p><span>user_id</span>: ${user.id}</p>
                         <p><span>Role</span>: ${user.role}</p>
                         <p><span>Location</span>: ${user.location}</p>
                         ${user.role === 'worker' ? `<p><span>Employed</span>: ${user['Employment Status'] == 1 ? "Yes" : "No"}</p>` : ''}
@@ -259,4 +264,28 @@ function addComment(incidentId) {
             // Handle error
             alert("An error occured while adding the comment")
         });
+}
+
+
+
+function getMessages()
+{
+    fetch("/admin/messages")
+    .then(response => response.json())
+    .then((messages) => {
+        messageView.innerHTML = '<h2>Messages</h2>';
+        messages.forEach((message) => {
+            const messageElement = document.createElement('div');
+            messageElement.classList.add("message");
+            if (message.sender_id === 1) {
+                messageElement.classList.add("admin-message");
+            }
+            messageElement.innerHTML = `
+                    <div class="message-sender">Sender Id: ${message.sender_id}</div>
+                    <div class="message-text">${message.message}</div>
+                    <div class="message-time">${message.timestamp}</div>
+            `;
+            messageView.appendChild(messageElement);
+        });
+    })
 }
