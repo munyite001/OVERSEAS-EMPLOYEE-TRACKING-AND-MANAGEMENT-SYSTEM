@@ -12,6 +12,7 @@
     <li><a href="#" class="sidebar-links active" data-target="users">Users</a></li>
     <li><a href="#" class="sidebar-links" data-target="documents">Document Verifications</a></li>
     <li><a href="#" class="sidebar-links" data-target="incidents">Incident Management</a></li>
+    <li><a href="#" class="sidebar-links" data-target="chat">Chat</a></li>
     <li><a href="/logout">Logout</a></li>
 {% endblock %}
 
@@ -49,6 +50,27 @@
             <div class="left-box incident-view"></div>
             <hr>
             <div class="right-box"></div>
+        </div>
+    </div>
+</div>
+<div id="chat" class="display-container" style="display: none;">
+    <div class="title-box">
+        <h2>Chat</h2>
+    </div>
+    <div class="content-box">
+        <div class="split-view">
+            <div class="left-box">
+                <h2>Send a message</h2>
+                <form action="/send_message" method="POST" class="message-form">
+                    <label for="receiver_id">Enter Receiver ID</label>
+                    <input type="hidden" name="sender_id" value="1">
+                    <input  name="receiver_id" style="margin: 1rem; padding: 1rem;" value="">
+                    <textarea class="message-box" name="message" placeholder="Type your message here"></textarea>
+                    <button  class="btn" type="submit">Send</button>
+                </form>
+            </div>
+            <hr>
+            <div class="right-box messages-view"></div>
         </div>
     </div>
 </div>

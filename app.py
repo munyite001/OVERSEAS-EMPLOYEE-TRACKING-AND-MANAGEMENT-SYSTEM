@@ -266,6 +266,7 @@ def worker_dashboard(id):
         flash("Unauthorized access!")
         return redirect("/worker/dashboard/{}".format(session["user_id"]))
     user = db.execute("SELECT * FROM WORKERS WHERE id = ?", (id,)).fetchall()
+    messages = db.execute("SELECT * FROM messages WHERE receiver_id = ? OR sender_id = ?", (id, id)).fetchall()
     documents = db.execute("SELECT * FROM WORKER_DOCUMENTS WHERE user_id = ?", (id,)).fetchall()
     incidents = db.execute("SELECT * FROM harassment_reports WHERE user_id = ?", (session["user_id"],)).fetchall()
 
@@ -276,7 +277,7 @@ def worker_dashboard(id):
     conn.commit()
     conn.close()
     """ Worker Dashboard """
-    return render_template("worker-dashboard.html", user_details=user_details, user_documents=documents, incidents=incidents)
+    return render_template("worker-dashboard.html", user_details=user_details, user_documents=documents, incidents=incidents, messages=messages)
 
 @app.route('/upload_document_workers', methods=['POST'])
 def upload_document_workers():
@@ -425,7 +426,48 @@ def report_harassment():
         conn.close()
 
         return redirect(url_for('worker_dashboard', id=session["user_id"]))
+    
 
+@app.route("/send_message", methods=["POST"])
+def send_message():
+    sender_id = request.form.get("sender_id")
+    receiver_id = request.form.get("receiver_id")
+    message = request.form.get("message")
+
+
+    conn = get_db()
+    db = conn.cursor()
+
+    db.execute("INSERT INTO messages (sender_id, receiver_id, message) VALUES (?, ?, ?)",
+               (sender_id, receiver_id, message))
+    conn.commit()
+    conn.close()
+
+    return jsonify({"message": "Message sent successfully"})
+
+@app.route("/get_messages/<int:user_id>", methods=["GET"])
+def get_messages(user_id):
+    conn = get_db()
+    db = conn.cursor()
+
+    # Get messages where the user is the sender or receiver
+    messages = db.execute("SELECT * FROM messages WHERE sender_id = ?",
+                          (user_id)).fetchall()
+
+    conn.close()
+
+    return jsonify(messages)
+
+@app.route("/admin/messages", methods=["GET"])
+def get_all_messages():
+    conn = get_db()
+    db = conn.cursor()
+
+    messages = db.execute("SELECT * FROM messages").fetchall()
+
+    conn.close()
+
+    return jsonify(messages)
 
 @app.route('/save-user-location', methods=['POST'])
 def save_user_location():

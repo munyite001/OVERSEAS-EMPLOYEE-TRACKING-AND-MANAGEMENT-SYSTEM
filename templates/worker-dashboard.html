@@ -14,6 +14,7 @@
         <li><a href="#" class="sidebar-links" data-target="worker-employment-status">Set Employment Status</a></li>
         <li><a href="#" class="sidebar-links" data-target="worker-employment-details">Employment Details</a></li>
         <li><a href="#" class="sidebar-links" data-target="worker-harassment">Report Harassment</a></li>
+        <li><a href="#" class="sidebar-links" data-target="chat">Chat</a></li>
         <li> <a href="#" class="sidebar-links" data-target="worker-incidents">View Incidents</a></li>
         <li><a href="/logout">Logout</a></li>
     {% endblock %}
@@ -208,6 +209,37 @@
                 <p style="margin: 1rem; font-weight: 900; font-size: 20px;">You first have to be employed for you to raise a harassment claim</p>
                 {% endif %}
             </div>
+            <div id="chat" class="display-container" style="display: none;">
+                <div class="title-box">
+                    <h2>Chat With Us</h2>
+                </div>
+                <div class="content-box">
+                    <div class="split-view">
+                        <div class="left-box">
+                            <h2>Send Us a message</h2>
+                            <form action="/send_message" method="POST" class="message-form">
+                                <input id="sender_id" type="hidden" name="sender_id" value="{{ user_details['id'] }}">
+                                <input type="hidden" name="receiver_id" value="1">
+                                <textarea class="message-box" name="message" placeholder="Type your message here"></textarea>
+                                <button  class="btn" type="submit" onclick="alert('Message sent successfully')">Send</button>
+                            </form>
+                        </div>
+                        <hr>
+                        <div class="right-box messages-view">
+                            <h2>Messages</h2>
+                            {% if messages %}
+                            {% for message in messages %}
+                            <div class="message {{ 'admin-message' if message['sender_id'] == 1 }}">
+                                <p>{{ message["message"] }}</p>
+                                <p>{{ message["timestamp"] }}</p>
+                            </div>
+                            {% endfor %}
+                            {% else %}
+                            <p>No messages yet</p>
+                            {% endif %} 
+                    </div>
+                </div>
+            </div>
             <div id="worker-incidents" class="display-container" style="display: none;">
                 <div class="title-box">
                     <h2>REPORTED INCIDENTS</h2>
@@ -286,6 +318,19 @@
                 });
             });
         });
+
+    // var messagesView = document.querySelector('.messages-view');
+    // const sender_id = document.getElementById('sender_id').value;
+    // function getMessages()
+    // {
+    //     fetch(`/get_messages/${sender_id}`)
+    //     .then(response => response.json())
+    //     .then((messages) => {
+    //         console.log(messages);
+    //     })
+    // }
+
+    // getMessages(sender_id);
         
-    </script>        
+    </script>       
     {% endblock %}
